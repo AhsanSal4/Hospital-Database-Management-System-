@@ -1,19 +1,20 @@
 from flask import Flask, jsonify, request
 from flask_app import (
-    Hire,
-    Display_Adm,
-    Display_U,
-    Add_New_Pa,
+    Hire_Doctor,
     Add_Med_Prescribed,
-    Display_Pa,
-    Display_Med,
-    Add_Recepti,
-    Delete_Recept,
-    Display_Recept,
-    Display_Pa_Doc,
-    Display_Med_Pa_s,
-    Add_Med,
-    _Bill_
+    Add_newPatient,
+    Display_allPatient,
+    Display_Doc_Adm ,
+    Display_Doc_U,
+    Display_Patient,
+    Add_Receptionist,
+    Delete_Receptionist,
+    Display_Receptionist,
+    Display_Pat_Doctor,
+    Display_Medicine,
+    Display_Med_Pa_,
+    Add_Medicine,
+    Bill
 )
 
 
