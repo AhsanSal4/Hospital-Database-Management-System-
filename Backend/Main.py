@@ -16,7 +16,8 @@ from flask_app import (
     Display_Med_Pa_,
     Add_Medicine,
     Bill,
-    login_p
+    login_p,
+    Add_Other_Staff
 )
 
 
@@ -63,9 +64,9 @@ def add_receptionist():
 def Login_pa():
     return login_p.loginp()
 
-@app.route('/admin/display_doctors', methods=['GET'])
-def display_doctors():
-    return Display_Doc_Adm.Display_Adm()
+@app.route('/otherstaffregister', methods=['POST'])
+def add_newStaff():
+    return Add_Other_Staff.add_new_other_staff()
 
 @app.route('/user', methods=['GET'])
 def user_mode():

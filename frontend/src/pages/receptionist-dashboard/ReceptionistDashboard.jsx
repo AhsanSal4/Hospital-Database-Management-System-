@@ -1,11 +1,24 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
+import Footer from '../../components/Footer.jsx';
 
 const ReceptionistDashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
+    <div className="min-h-screen bg-blue-50 flex flex-col">
+      <nav className="bg-blue-700 p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <h1 className="text-white text-2xl">CityCare Hospital</h1>
+        <div>
+      <Link to="/">
+      <button className="bg-white text-blue-700 px-4 py-2 rounded">Log Out</button>
+      </Link>
+        </div>
+      </div>
+    </nav>
+      <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
       <h1 className="text-4xl font-bold mb-8 text-blue-600">Receptionist Dashboard</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full px-6 max-w-4xl">
         {/* Card 1: Register New Patient */}
@@ -57,6 +70,9 @@ const ReceptionistDashboard = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </div>
+    
   );
 };
 
