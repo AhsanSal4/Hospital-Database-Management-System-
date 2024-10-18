@@ -1,28 +1,33 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import mysql.connector as myc
 import random
+from datetime import datetime
 
 app = Flask(__name__)
+CORS(app, resources={r"/add_patient": {"origins": "http://localhost:5173"}})
 
-# Function to add new patient (Flask version)
-@app.route('/add_patient', methods=['POST'])
+
+@app.route('/add_patient', methods=['POST', 'OPTIONS'])  # Handle OPTIONS method
 def add_new_patient():
+    if request.method == 'OPTIONS':
+        # CORS preflight request
+        response = app.make_default_options_response()
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+        response.headers.update(headers)
+        return response
+
     try:
+        # Actual POST request logic goes here
         # Connect to the database
         db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
         cur = db.cursor()
 
-        # Helper functions to pad or format strings
-        def gender_(g):
-            return g.ljust(6)  # Pad to 6 characters for gender
-
-        def p_name(p):
-            return p.ljust(20)  # Pad to 20 characters for patient name
-
-        def symptom_(s):
-            return s.ljust(20)  # Pad to 20 characters for symptoms
-
-        # Get data from the request (assuming JSON input)
+        # Extract data from request body
         data = request.json
         patient_name = data.get('patient_name')
         mobile_no = data.get('mobile_no')
@@ -32,44 +37,44 @@ def add_new_patient():
         weight_kg = data.get('weight_kg')
         dt_admit = data.get('date_admit')
         symptom = data.get('symptom')
+        username = data.get('username')
+        password = data.get('password')
         dr_id = data.get("dr_id")
 
-        # Call helper functions to adjust the data
-        p = p_name(patient_name)
-        g = gender_(gender)
-        s = symptom_(symptom)
+        # Generate random park_id
+        park_id = generate_park_id()
+        cur.execute("INSERT INTO Parking (park_id, owner) VALUES (%s, %s)", (park_id, 'PATIENT'))
 
-        # Generate a random patient code
-        p_code = (
-            random.choice('ABCDEFCGHIJKLMNOPQRSTUVWXYZ') +
-            ''.join(random.choices('1234567890', k=5))
-        )
+        # Insert login credentials into the login table
+        cur.execute("INSERT INTO login (username, pwd, role, last_login) VALUES (%s, %s, %s, %s)", 
+                    (username, password, 'patient', dt_admit))
 
-        # Insert query for patient details
-        query = """
-        INSERT INTO Patient (p_id, p_name, ph_no, gender, age, height, weight, dt_admit, disease, med_prescribed, dr_id)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        values = (p_code, p, mobile_no, g, age, height_cm, weight_kg, dt_admit, s, ' ', dr_id)
+        # Insert patient details into the Patient table
+        p_code = generate_random_code()
+        cur.execute("""
+        INSERT INTO Patients (p_id, p_name, ph_no, gender, age, height_cm, weight_kg, dt_admit, disease, med_prescribed, username, dr_id, park_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (p_code, patient_name, mobile_no, gender, age, height_cm, weight_kg, dt_admit, symptom, None , username, dr_id, park_id))
 
-        cur.execute(query, values)
         db.commit()
-
-        # Return success response
         return jsonify({
-            'message': f'{cur.rowcount} record(s) inserted',
-            'p_code': p_code
+            'message': 'Patient registered successfully',
+            'patient_code': p_code,
+            'park_id': park_id
         }), 200
 
-    except Exception as error:
-        # Return error response
-        return jsonify({'error': str(error)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
     finally:
-        # Close cursor and connection
         cur.close()
         db.close()
 
-# Run Flask app
+def generate_park_id():
+    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))
+
+def generate_random_code():
+    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=5))
+
 if __name__ == '__main__':
     app.run(debug=True)

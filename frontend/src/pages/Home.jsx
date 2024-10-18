@@ -19,7 +19,7 @@ const Home = () => {
               Login
             </button>
           </Link>
-          <Link to="/receptionist-dashboard">
+          <Link to="/register">
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
               Register
             </button>

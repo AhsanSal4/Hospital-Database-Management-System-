@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from flask_app import (
     Hire_Doctor,
     Add_Med_Prescribed,
@@ -14,11 +15,13 @@ from flask_app import (
     Display_Medicine,
     Display_Med_Pa_,
     Add_Medicine,
-    Bill
+    Bill,
+    login_p
 )
 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def welcome():
@@ -47,6 +50,14 @@ def admin_mode():
 @app.route('/admin/hire_doctor', methods=['POST'])
 def hire_doctor():
     return Hire_Doctor.Hire()
+
+@app.route('/add_patient', methods=['POST'])
+def add_newPatient():
+    return Add_newPatient.add_new_patient()
+
+@app.route('/login_pa', methods=['POST'])
+def Login_pa():
+    return login_p.loginp()
 
 @app.route('/admin/display_doctors', methods=['GET'])
 def display_doctors():

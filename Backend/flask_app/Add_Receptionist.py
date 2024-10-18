@@ -5,7 +5,7 @@ import random
 app = Flask(__name__)
 
 # Function to add new receptionist (Flask version)
-@app.route('/add_receptionist', methods=['POST'])
+@app.route('/Add_Receptionist', methods=['POST'])
 def add_receptionist():
     try:
         # Connect to the database

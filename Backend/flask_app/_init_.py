@@ -15,3 +15,4 @@ from .Display_Medicine import display_all_medicines             #12
 from .Display_Med_Pa_ import display_medicines_for_patient          #13
 from .Add_Medicine import add_medicine                     #14
 from .Bill import generate_bill                              #15
+from .login_p import loginp
