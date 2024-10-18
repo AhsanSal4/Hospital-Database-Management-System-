@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import mysql.connector as myc
 import random
+from datetime import datetime  # Import datetime to get the current date
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 # Function to add new receptionist (Flask version)
-@app.route('/Add_Receptionist', methods=['POST'])
-def add_receptionist():
+@app.route('/Add_Recept', methods=['POST'])
+def add_reception():
     try:
         # Connect to the database
         db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
@@ -21,12 +24,14 @@ def add_receptionist():
 
         # Get data from the request (assuming JSON input)
         data = request.json
-        r_name_input = data.get('receptionist_name')
+        r_name_input = data.get('fullName')
         gender_input = data.get('gender')
+        mobile_no = data.get('mobile_no')
         age = data.get('age')
         salary = data.get('salary')
         password = data.get('password')
-        work_hours = data.get('work_hours')
+        work_hours = data.get('working_hrs')
+        username = data.get('username')  # Get username from request
 
         # Call helper functions to adjust the data
         r_name_formatted = r_name(r_name_input)
@@ -38,12 +43,37 @@ def add_receptionist():
             ''.join(random.choices('1234567890', k=2))
         )
 
-        # Insert query for receptionist details
-        query = """
-        INSERT INTO Receptionist (r_id, r_name, age, salary, working_hrs, pwd, gender)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        # Generate a random park ID
+        park_id = (
+            random.choice('ABCDEFCGHIJKLMNOPQRSTUVWXYZ') +
+            ''.join(random.choices('1234567890', k=3))
+        )
+
+        # Get the current date for last_login
+        last_login_date = datetime.now().strftime('%Y-%m-%d')  # Format date as 'YYYY-MM-DD'
+
+        # Insert into Parking table first
+        park_query = """
+        INSERT INTO Parking (park_id, owner)
+        VALUES (%s, %s)
         """
-        values = (r_id, r_name_formatted, age, salary, work_hours, password, gender_formatted)
+        park_values = (park_id,r_name_formatted )
+        cur.execute(park_query, park_values)
+
+        # Insert into Login table
+        login_query = """
+        INSERT INTO login (username, pwd, role, last_login)
+        VALUES (%s, %s, %s, %s)
+        """
+        login_values = (username, password, 'RECEPTIONIST', last_login_date)  # Include last_login date
+        cur.execute(login_query, login_values)
+
+        # Insert query for receptionist details, including last_login
+        query = """
+        INSERT INTO Receptionists (r_id, r_name,ph_no, working_hrs, gender, age, salary,username,park_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        values = (r_id, r_name_formatted,mobile_no, work_hours, gender_formatted, age, salary, username, park_id)  # Include last_login date
 
         cur.execute(query, values)
         db.commit()

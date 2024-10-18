@@ -47,13 +47,17 @@ def admin_mode():
         }), 200
     return jsonify({"error": "Invalid password"}), 403
 
-@app.route('/admin/hire_doctor', methods=['POST'])
+@app.route('/Hire_Doctor', methods=['POST'])
 def hire_doctor():
-    return Hire_Doctor.Hire()
+    return Hire_Doctor.hire()
 
 @app.route('/add_patient', methods=['POST'])
 def add_newPatient():
     return Add_newPatient.add_new_patient()
+
+@app.route('/Add_Recept', methods=['POST'])
+def add_receptionist():
+    return Add_Receptionist.add_reception()
 
 @app.route('/login_pa', methods=['POST'])
 def Login_pa():
