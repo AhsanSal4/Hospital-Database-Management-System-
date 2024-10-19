@@ -45,6 +45,17 @@ const ManageMedicine = () => {
             Delete Medicine
           </button>
         </div>
+
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:scale-105 transition-transform duration-300 ease-in-out">
+          <h2 className="text-xl font-semibold text-green-500">Add Medicine</h2>
+          <p className="text-gray-600 mt-2">Add a Medicine to the database.</p>
+          <button
+            onClick={() => navigate("/add-Medicine")}
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+          >
+            Add Medicine
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ from flask_app import (
     Add_Medicine,
     Bill,
     login_p,
+    login_adm,
     Display_OtherStaffs,
     Update_Patient,
     UpdateReceptionists,
@@ -25,8 +26,9 @@ from flask_app import (
     Delete_Patient,
     Delete_Doctor,
     Delete_Otherstaffs,
-    Register_otherStaffs,
-    Add_Other_Staff
+    DeleteMed,
+    Add_Other_Staff,
+    UpdateMedicine
 )
 
 app = Flask(__name__)
@@ -75,6 +77,14 @@ def Login_pa():
 @app.route('/login_do', methods=['POST'])
 def Login_do():
     return login_p.logind()
+
+@app.route('/login_adm', methods=['POST'])
+def Login_Ad():
+    return login_adm.loginad()
+
+@app.route('/update_medicine', methods=['PUT'])
+def up_med():
+    return UpdateMedicine.update_medicine()
 
 @app.route('/login_re', methods=['POST'])
 def Login_re():
@@ -137,6 +147,14 @@ def Get_doctors(dr_id):
 def Delete_doctors(dr_id):
     return Delete_Doctor.delete_doctors(dr_id)
 
+@app.route('/get_medicine/<m_id>', methods=['GET'])
+def Get_med(m_id):
+    return DeleteMed.get_medicine(m_id)
+
+@app.route('/delete_medicine/<m_id>', methods=['DELETE'])
+def Delete_med(m_id):
+    return DeleteMed.delete_medicine(m_id)
+
 @app.route('/get_staffs/<s_id>', methods=['GET'])
 def Get_staffs(s_id):
     return Delete_Otherstaffs.get_staffs(s_id)
@@ -149,7 +167,9 @@ def Delete_staffs(s_id):
 def add_newStaff():
     return Add_Other_Staff.add_new_other_staff()
 
-@app.route('/add_patient', methods=['POST'])
+@app.route('/medicineregister', methods=['POST'])
+def med_reg():
+    return Add_Medicine.add_new_medicine()
 
 @app.route('/user', methods=['GET'])
 def user_mode():

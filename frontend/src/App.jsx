@@ -31,6 +31,9 @@ import RegisterOtherstaffPage from './pages/admin-dashboard/RegisterOtherstaffPa
 import AdminLoginPage from './pages/AdminLoginPage';
 import ViewMedicines from './pages/admin-dashboard/ViewMedicines';
 import ManageMedicine from './pages/admin-dashboard/ManageMedicine';
+import DeleteMedicine from './pages/admin-dashboard/DeleteMedicine';
+import UpdateMedicine from './pages/admin-dashboard/UpdateMedicine';
+import AddMed from './pages/admin-dashboard/AddMed';
 
 function App() {
   return (
@@ -68,8 +71,9 @@ function App() {
           <Route path="/admin-login" element={<AdminLoginPage/>} />
           <Route path="/view-medicine" element={<ViewMedicines/>} />
           <Route path="/manage-medicine" element={<ManageMedicine/>} />
-          
-
+          <Route path="/delete-Medicine" element={<DeleteMedicine/>} />
+          <Route path="/update-Medicine" element={<UpdateMedicine/>} />
+          <Route path="/add-Medicine" element={<AddMed/>} />
 
 
         </Routes>
