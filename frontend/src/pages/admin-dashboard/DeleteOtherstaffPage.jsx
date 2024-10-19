@@ -13,14 +13,14 @@ const DeleteOtherStaffPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/otherstaff/${staffID}`);
+      const response = await fetch(`http://localhost:5000/get_staffs/${staffID}`); // Use receptionistID
       const data = await response.json();
 
-      if (response.ok && data) {
-        setStaffName(data.name);
+      if (response.ok) {
+        setStaffName(data.S_name);
         setIsConfirmed(false);
       } else {
-        alert('Staff not found.');
+        alert(data.error||'Staff not found.');
         setStaffName('');
       }
     } catch (error) {
@@ -37,9 +37,10 @@ const DeleteOtherStaffPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/otherstaff/${staffID}`, {
+      const response = await fetch(`http://localhost:5000/delete_staffs/${staffID}`, {
         method: 'DELETE',
       });
+      const data = await response.json(); // Get JSON response
 
       if (response.ok) {
         alert('Staff deleted successfully');
@@ -47,7 +48,7 @@ const DeleteOtherStaffPage = () => {
         setStaffName('');
         setIsConfirmed(false);
       } else {
-        alert('Error deleting staff.');
+        alert(data.error||'Error deleting staff.');
       }
     } catch (error) {
       console.error('Error deleting staff:', error);

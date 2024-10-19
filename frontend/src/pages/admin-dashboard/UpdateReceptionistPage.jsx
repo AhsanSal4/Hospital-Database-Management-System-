@@ -4,26 +4,30 @@ const UpdateReceptionistPage = () => {
   const [receptionistID, setReceptionistID] = useState('');
   const [updateField, setUpdateField] = useState('');
   const [newValue, setNewValue] = useState('');
-  
+
   const fields = [
-    'Receptionist Name',
+    'R_name',
     'Gender',
     'Age',
     'Salary',
-    'Password',
-    'Work Hours',
+    'Username',
+    'Working_hrs',
   ];
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     // Handle the update logic
     try {
-      const response = await fetch(`/api/receptionists/${receptionistID}`, {
+      const response = await fetch(`http://localhost:5000/update_receptionists`, {  // Ensure the endpoint matches your Flask app
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ [updateField]: newValue }),
+        body: JSON.stringify({
+          patientID: receptionistID,  // Changed from patientID to receptionistID
+          updateField,
+          newValue,
+        }),
       });
 
       if (response.ok) {

@@ -7,7 +7,6 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app, resources={r"/add_patient": {"origins": "http://localhost:5173"}})
 
-
 @app.route('/add_patient', methods=['POST', 'OPTIONS'])  # Handle OPTIONS method
 def add_new_patient():
     if request.method == 'OPTIONS':
@@ -21,10 +20,12 @@ def add_new_patient():
         response.headers.update(headers)
         return response
 
+    db = None
+    cur = None
     try:
         # Actual POST request logic goes here
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
         cur = db.cursor()
 
         # Extract data from request body
@@ -47,14 +48,14 @@ def add_new_patient():
 
         # Insert login credentials into the login table
         cur.execute("INSERT INTO login (username, pwd, role, last_login) VALUES (%s, %s, %s, %s)", 
-                    (username, password, 'patient', dt_admit))
+                    (username, password, patient_name, dt_admit))
 
         # Insert patient details into the Patient table
         p_code = generate_random_code()
         cur.execute("""
         INSERT INTO Patients (p_id, p_name, ph_no, gender, age, height_cm, weight_kg, dt_admit, disease, med_prescribed, username, dr_id, park_id)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (p_code, patient_name, mobile_no, gender, age, height_cm, weight_kg, dt_admit, symptom, None , username, dr_id, park_id))
+        """, (p_code, patient_name, mobile_no, gender, age, height_cm, weight_kg, dt_admit, symptom, None, username, dr_id, park_id))
 
         db.commit()
         return jsonify({
@@ -67,8 +68,11 @@ def add_new_patient():
         return jsonify({'error': str(e)}), 500
 
     finally:
-        cur.close()
-        db.close()
+        # Safely close the cursor and connection if they were created
+        if cur:
+            cur.close()
+        if db:
+            db.close()
 
 def generate_park_id():
     return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))

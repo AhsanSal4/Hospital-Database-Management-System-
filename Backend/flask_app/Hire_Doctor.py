@@ -1,17 +1,26 @@
 from flask import Flask, jsonify, request
-import mysql.connector as myc
+import mysql.connector
 import random
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
+# Function to connect to the database
+def get_db_connection():
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password='Nibhin@137',
+        database='hospital'
+    )
+    return conn
+
+# Function to generate a unique doctor ID
 def generate_doctor_id():
-    a = random.choice('ABCDEFGHIJKLmnopqrstuvwxyz')
-    b = random.choice('1234567890')
-    c = random.choice('1234567890')
-    d = random.choice('1234567890')
-    return str(a) + str(b) + str(c) + str(d)
+    return random.choice('ABCDEFGHIJKLmnopqrstuvwxyz') + ''.join(random.choices('1234567890', k=3))
 
-@app.route('/Hire_Doctor', methods=['POST'])
+@app.route('/admin/hire_doctor', methods=['POST'])
 def hire_doctor():
     try:
         # Retrieve data from the request body
@@ -32,20 +41,20 @@ def hire_doctor():
             return jsonify({'error': 'Password must be 5 characters long'}), 400
 
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
+        db = get_db_connection()
         cur = db.cursor()
 
         # Generate a doctor ID
         dr_id = generate_doctor_id()
 
-        # Insert into the database
-        query = "INSERT INTO Doctor VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        # Insert doctor record into the database
+        query = "INSERT INTO Doctor (dr_id, Doctor_Name, Gender, Specialisation, Age, Salary, Fees, Passwd) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         values = (dr_id, Doctor_Name, Gender, Specialisation, Age, Salary, Fees, Passwd)
         cur.execute(query, values)
         db.commit()
 
         response = {
-            'message': 'Doctor record inserted',
+            'message': 'Doctor record inserted successfully',
             'dr_id': dr_id
         }
         return jsonify(response), 201
@@ -54,6 +63,7 @@ def hire_doctor():
         return jsonify({'error': str(error)}), 500
 
     finally:
+        # Safely close the cursor and the connection
         if cur:
             cur.close()
         if db:

@@ -2,21 +2,37 @@ import React, { useState, useEffect } from 'react';
 
 const ViewOtherstaffPage = () => {
   const [otherStaff, setOtherStaff] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Fetch other staff data from the server
     const fetchOtherStaff = async () => {
       try {
-        const response = await fetch('/api/otherstaff'); // Adjust the API URL as needed
+        const response = await fetch('http://localhost:5000/get_all_staffs'); // Adjust the backend URL as needed
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setOtherStaff(data);
       } catch (error) {
         console.error('Error fetching other staff:', error);
+        setError(error.message); // Store the error message to display later
+      } finally {
+        setLoading(false); // Always set loading to false after fetch
       }
     };
 
     fetchOtherStaff();
   }, []);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><p>Loading staff data...</p></div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center"><p>Error: {error}</p></div>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-blue-50">
@@ -46,15 +62,15 @@ const ViewOtherstaffPage = () => {
             </thead>
             <tbody>
               {otherStaff.map((staff) => (
-                <tr key={staff.id}>
-                  <td className="px-4 py-2 border">{staff.id}</td>
-                  <td className="px-4 py-2 border">{staff.name}</td>
-                  <td className="px-4 py-2 border">{staff.phonenumber}</td>
-                  <td className="px-4 py-2 border">{staff.designation}</td>
-                  <td className="px-4 py-2 border">{staff.gender}</td>
-                  <td className="px-4 py-2 border">{staff.age}</td>
-                  <td className="px-4 py-2 border">{staff.username}</td>
-                  <td className="px-4 py-2 border">{staff.parkid}</td>
+                <tr key={staff.S_id}>
+                  <td className="px-4 py-2 border">{staff.S_id}</td>
+                  <td className="px-4 py-2 border">{staff.S_name}</td>
+                  <td className="px-4 py-2 border">{staff.Ph_No}</td>
+                  <td className="px-4 py-2 border">{staff.Designation}</td>
+                  <td className="px-4 py-2 border">{staff.Gender}</td>
+                  <td className="px-4 py-2 border">{staff.Age}</td>
+                  <td className="px-4 py-2 border">{staff.Username}</td>
+                  <td className="px-4 py-2 border">{staff.Park_id}</td>
                 </tr>
               ))}
             </tbody>

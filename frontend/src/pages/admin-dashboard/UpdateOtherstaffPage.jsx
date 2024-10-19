@@ -6,33 +6,39 @@ const UpdateOtherstaffPage = () => {
   const [newValue, setNewValue] = useState('');
 
   const fields = [
-    'Name',
-    'Phone Number',
+    'S_name',
+    'Ph_No',
     'Designation',
     'Gender',
     'Age',
     'Username',
-    'Park ID',
+    'Park_id',
   ];
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/otherstaff/${staffID}`, {
+      const response = await fetch(`http://localhost:5000/update_otherstaff`, {  // Update to correct endpoint
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ [updateField]: newValue }),
+        body: JSON.stringify({
+          staffID,
+          updateField,
+          newValue,
+        }),
       });
 
       if (response.ok) {
         alert(`Updated ${updateField} successfully!`);
+        // Clear the fields after update
         setStaffID('');
         setUpdateField('');
         setNewValue('');
       } else {
-        alert('Failed to update staff information.');
+        const errorData = await response.json(); // Get the error message
+        alert(`Failed to update staff information: ${errorData.error}`);
       }
     } catch (error) {
       console.error('Error updating staff:', error);

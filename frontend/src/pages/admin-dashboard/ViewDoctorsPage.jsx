@@ -4,11 +4,19 @@ const ViewDoctorsPage = () => {
   const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
-    // Fetch doctors data from the database (replace with your API call)
-    fetch('/api/doctors')
-      .then((response) => response.json())
-      .then((data) => setDoctors(data))
-      .catch((error) => console.error('Error fetching doctors:', error));
+    // Fetch the patient data from the Flask backend
+    const fetchDoctors = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/display_all_doctors'); // Adjust the backend URL as needed
+        const data = await response.json();
+        setDoctors(data);
+
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+      }
+    };
+  
+    fetchDoctors();
   }, []);
 
   return (
@@ -24,19 +32,19 @@ const ViewDoctorsPage = () => {
               <th className="py-3 px-5">Age</th>
               <th className="py-3 px-5">Salary</th>
               <th className="py-3 px-5">Fees</th>
-              <th className="py-3 px-5">Password</th>
+              <th className="py-3 px-5">Username</th>
             </tr>
           </thead>
           <tbody>
             {doctors.map((doctor) => (
               <tr key={doctor.id} className="hover:bg-gray-100 transition duration-300">
-                <td className="py-3 px-5">{doctor.fullName}</td>
-                <td className="py-3 px-5">{doctor.gender}</td>
-                <td className="py-3 px-5">{doctor.specialisation}</td>
-                <td className="py-3 px-5">{doctor.age}</td>
-                <td className="py-3 px-5">{doctor.salary}</td>
+                <td className="py-3 px-5">{doctor.Dr_name}</td>
+                <td className="py-3 px-5">{doctor.Gender}</td>
+                <td className="py-3 px-5">{doctor.Specialization}</td>
+                <td className="py-3 px-5">{doctor.Age}</td>
+                <td className="py-3 px-5">{doctor.Salary}</td>
                 <td className="py-3 px-5">{doctor.fees}</td>
-                <td className="py-3 px-5">{doctor.password}</td>
+                <td className="py-3 px-5">{doctor.Username}</td>
               </tr>
             ))}
           </tbody>

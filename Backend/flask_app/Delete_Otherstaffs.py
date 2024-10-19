@@ -28,14 +28,14 @@ def welcome():
     <p>Use /admin for admin functionalities, /user for user functionalities, /exit to exit.</p>
     """
 # Route to delete a receptionist by R_code
-@app.route('/get_receptionists/<r_id>', methods=['GET'])
-def get_receptionists(r_id):
+@app.route('/get_staffs/<s_id>', methods=['GET'])
+def get_staffs(s_id):
     connection = create_db_connection()
     if connection is None:
         return jsonify({'error': 'Database connection error'}), 500
 
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT R_name FROM receptionists WHERE R_id = %s", (r_id,))
+    cursor.execute("SELECT S_name FROM other_staffs WHERE S_id = %s", (s_id,))
     rec = cursor.fetchone()
 
     cursor.close()
@@ -44,10 +44,10 @@ def get_receptionists(r_id):
     if rec:
         return jsonify(rec)
     else:
-        return jsonify({'error': 'Receptionist not found'}), 404
+        return jsonify({'error': 'Staff not found'}), 404
 
-@app.route('/delete_receptionists/<r_id>', methods=['DELETE'])
-def delete_receptionists(r_id):
+@app.route('/delete_staffs/<s_id>', methods=['DELETE'])
+def delete_staffs(s_id):
     connection = create_db_connection()
     if connection is None:
         return jsonify({'error': 'Database connection error'}), 500
@@ -55,7 +55,7 @@ def delete_receptionists(r_id):
     cursor = connection.cursor()
 
     # The tuple must have a trailing comma to ensure it's interpreted correctly
-    cursor.execute("DELETE FROM receptionists WHERE R_id = %s", (r_id,))  # Add a trailing comma
+    cursor.execute("DELETE FROM other_staffs WHERE S_id = %s", (s_id,))  # Add a trailing comma
 
     connection.commit()
 
@@ -64,9 +64,9 @@ def delete_receptionists(r_id):
     connection.close()
 
     if rowcount > 0:
-        return jsonify({'message': 'Receptionist deleted successfully'})
+        return jsonify({'message': 'Staff deleted successfully'})
     else:
-        return jsonify({'error': 'Receptionist not found'}), 404
+        return jsonify({'error': 'Staff not found'}), 404
 
 
 # Run the Flask app

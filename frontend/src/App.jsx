@@ -26,9 +26,10 @@ import DeleteReceptionistPage from './pages/admin-dashboard/DeleteReceptionistPa
 import ManageOtherstaff from './pages/admin-dashboard/ManageOtherstaff';
 import ViewOtherstaffPage from './pages/admin-dashboard/ViewOtherstaffPage';
 import UpdateOtherstaffPage from './pages/admin-dashboard/UpdateOtherstaffPage';
-import DeleteOtherStaffPage from './pages/admin-dashboard/DeleteOtherStaffPage';
+import DeleteOtherStaffPage from './pages/admin-dashboard/DeleteOtherstaffPage';
 import RegisterOtherstaffPage from './pages/admin-dashboard/RegisterOtherstaffPage';
 import AdminLoginPage from './pages/AdminLoginPage';
+import ViewMedicines from './pages/admin-dashboard/ViewMedicines';
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
           <Route path="/delete-otherstaff" element={<DeleteOtherStaffPage/>} />
           <Route path="/register-otherstaff" element={<RegisterOtherstaffPage/>} />
           <Route path="/admin-login" element={<AdminLoginPage/>} />
+          <Route path="/view-medicine" element={<ViewMedicines/>} />
 
 
 

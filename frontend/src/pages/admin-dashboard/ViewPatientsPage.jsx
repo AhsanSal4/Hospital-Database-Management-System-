@@ -4,19 +4,20 @@ const ViewPatientsPage = () => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
-    // Fetch the patient data from the backend
+    // Fetch the patient data from the Flask backend
     const fetchPatients = async () => {
       try {
-        const response = await fetch('/get_all_patients'); // Adjust the backend route as necessary
+        const response = await fetch('http://localhost:5000/get_all_patients'); // Adjust the backend URL as needed
         const data = await response.json();
         setPatients(data);
       } catch (error) {
         console.error('Error fetching patients:', error);
       }
     };
-
+  
     fetchPatients();
   }, []);
+  
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
@@ -45,16 +46,16 @@ const ViewPatientsPage = () => {
                   key={index}
                   className="hover:bg-blue-100 transition-colors duration-300"
                 >
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.patient_name}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.mobile_no}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.gender}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.age}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.height_cm}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.weight_kg}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.date_admit}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.symptom}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.dr_id}</td>
-                  <td className="py-2 px-4 border-b border-gray-200">{patient.username}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.P_name}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Ph_No}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Gender}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Age}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Height_cm}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Weight_kg}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Dt_admit}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Disease}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Dr_id}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Username}</td>
                 </tr>
               ))
             ) : (

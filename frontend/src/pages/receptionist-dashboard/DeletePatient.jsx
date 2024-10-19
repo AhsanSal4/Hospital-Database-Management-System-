@@ -6,7 +6,7 @@ const DeletePatient = () => {
   const [patientName, setPatientName] = useState('');
   const [isConfirmed, setIsConfirmed] = useState(false);
 
-  // Function to fetch the patient name based on the patient ID
+  // Fetch patient name by ID
   const fetchPatientName = async () => {
     if (!patientID) {
       alert('Please enter a Patient ID.');
@@ -14,24 +14,23 @@ const DeletePatient = () => {
     }
 
     try {
-      const response = await fetch(`/api/patients/${patientID}`); // Adjust URL as needed
+      const response = await fetch(`http://localhost:5000/get_patient/${patientID}`);
       const data = await response.json();
 
-      // Check if the patient exists
-      if (response.ok && data) {
-        setPatientName(data.name); // Assuming the API returns an object with a 'name' property
-        setIsConfirmed(false); // Reset confirmation state
+      if (response.ok) {
+        setPatientName(data.P_name);  // Assuming 'P_name' comes from the API response
+        setIsConfirmed(false);
       } else {
         alert('Patient not found.');
-        setPatientName(''); // Reset patient name if not found
+        setPatientName('');
       }
     } catch (error) {
       console.error('Error fetching patient data:', error);
-      alert('An error occurred while fetching patient data.');
+      alert('Error fetching patient data.');
     }
   };
 
-  // Function to handle the delete action
+  // Handle patient deletion
   const handleDelete = async (e) => {
     e.preventDefault();
     if (!isConfirmed) {
@@ -40,18 +39,18 @@ const DeletePatient = () => {
     }
 
     try {
-      const response = await fetch(`/api/patients/${patientID}`, {
+      const response = await fetch(`http://localhost:5000/delete_patient/${patientID}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
         alert('Patient deleted successfully');
-        // Reset the form
         setPatientID('');
         setPatientName('');
         setIsConfirmed(false);
       } else {
-        alert('Error deleting patient.');
+        const errorData = await response.json();
+        alert(`Error: ${errorData.error}`);
       }
     } catch (error) {
       console.error('Error deleting patient:', error);
@@ -61,7 +60,6 @@ const DeletePatient = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-blue-50">
-      {/* Header */}
       <header className="bg-gradient-to-r from-blue-500 to-blue-400 text-white py-6 shadow-md">
         <div className="text-center">
           <h1 className="text-4xl font-bold">CityCare Hospital</h1>
@@ -69,14 +67,11 @@ const DeletePatient = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-grow flex justify-center items-center p-6">
-        <section className="bg-white p-8 border border-gray-300 rounded-lg shadow-md transform transition-transform hover:scale-105 duration-300">
+        <section className="bg-white p-8 border border-gray-300 rounded-lg shadow-md">
           <form className="space-y-4" onSubmit={handleDelete}>
             <div>
-              <label htmlFor="patientID" className="block font-medium">
-                Patient ID:
-              </label>
+              <label htmlFor="patientID" className="block font-medium">Patient ID:</label>
               <input
                 type="text"
                 id="patientID"
@@ -95,21 +90,17 @@ const DeletePatient = () => {
             </div>
 
             {patientName && (
-              <div className="mt-4">
-                <p className="font-medium">
-                  Patient Name: <span className="font-bold">{patientName}</span>
-                </p>
-                <div className="mt-2">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      className="form-radio text-blue-600"
-                      checked={isConfirmed}
-                      onChange={() => setIsConfirmed(true)}
-                    />
-                    <span className="ml-2">Confirm deletion of {patientName}</span>
-                  </label>
-                </div>
+              <div>
+                <p className="mt-2">Patient Name: <strong>{patientName}</strong></p>
+                <label className="flex items-center mt-2">
+                  <input
+                    type="checkbox"
+                    checked={isConfirmed}
+                    onChange={(e) => setIsConfirmed(e.target.checked)}
+                    className="mr-2"
+                  />
+                  <span>Confirm deletion</span>
+                </label>
               </div>
             )}
 
@@ -123,9 +114,8 @@ const DeletePatient = () => {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-blue-500 text-white text-center py-4">
-        <p>&copy; 2024 CityCare Hospital | Your health, our priority.</p>
+      <footer className="bg-gray-800 text-white py-4 text-center">
+        <p>&copy; {new Date().getFullYear()} CityCare Hospital. All rights reserved.</p>
       </footer>
     </div>
   );

@@ -10,8 +10,8 @@ def get_db_connection():
     conn = mysql.connector.connect(
         host='localhost',
         user='root',  # Replace with your DB user
-        password='mysql123',  # Replace with your DB password
-        database='micro_project'  # Replace with your DB name
+        password='Nibhin@137',  # Replace with your DB password
+        database='hospital'  # Replace with your DB name
     )
     return conn
 
