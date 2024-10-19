@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import Modal from '../../components/Modal'; // Make sure the path is correct
 
 const RegisterOtherstaffPage = () => {
   const [otherStaffData, setOtherStaffData] = useState({
-    id: '',
     name: '',
     phonenumber: '',
     designation: '',
@@ -11,12 +11,14 @@ const RegisterOtherstaffPage = () => {
     username: '',
     parkid: '',
     pwd: '',
-    role: '', // Changed to text input
-    owner: '', // New field for parking owner
-    last_login: '', // New field for last login
+    role: '',
+    owner: '',
+    last_login: '',
+    password: '',
   });
 
-  const [message, setMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,10 +36,10 @@ const RegisterOtherstaffPage = () => {
         body: JSON.stringify(otherStaffData),
       });
 
+      const data = await response.json(); // Capture response data
       if (response.ok) {
-        setMessage('New staff member registered successfully!');
-        setOtherStaffData({
-          id: '',
+        setModalMessage('New staff member registered successfully!');
+        setOtherStaffData({ // Reset the form
           name: '',
           phonenumber: '',
           designation: '',
@@ -47,174 +49,148 @@ const RegisterOtherstaffPage = () => {
           parkid: '',
           pwd: '',
           role: '',
-          owner: '', // Reset the owner field
-          last_login: '', // Reset the last login field
+          owner: '',
+          last_login: '',
+          password: '',
         });
       } else {
-        const errorData = await response.json();
-        setMessage(errorData.message);
+        setModalMessage('Error: ' + (data.message || 'Registration failed.'));
       }
     } catch (error) {
       console.error('Error registering staff:', error);
-      setMessage('An error occurred while registering the staff.');
+      setModalMessage('Error: ' + error.message);
     }
+    setIsModalOpen(true); // Open the modal after submit
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-blue-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-blue-500 to-blue-400 text-white py-6 shadow-md">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold">CityCare Hospital</h1>
-          <p className="text-xl mt-2">Register New Staff</p>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
+      <h1 className="text-3xl font-bold mb-8 text-blue-600">Register New Staff</h1>
+      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-8 max-w-lg w-full space-y-4">
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={otherStaffData.name}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+            required
+          />
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="flex-grow flex justify-center items-center p-6">
-        <section className="bg-white p-8 border border-gray-300 rounded-lg shadow-md w-full max-w-md">
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="id" className="block font-medium">Staff ID:</label>
-              <input
-                type="text"
-                id="id"
-                name="id"
-                value={otherStaffData.id}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Phone Number:</label>
+          <input
+            type="tel"
+            name="phonenumber"
+            value={otherStaffData.phonenumber}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+            required
+          />
+        </div>
 
-            <div>
-              <label htmlFor="name" className="block font-medium">Name:</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={otherStaffData.name}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Designation:</label>
+          <input
+            type="text"
+            name="designation"
+            value={otherStaffData.designation}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+            required
+          />
+        </div>
 
-            <div>
-              <label htmlFor="phonenumber" className="block font-medium">Phone Number:</label>
-              <input
-                type="tel"
-                id="phonenumber"
-                name="phonenumber"
-                value={otherStaffData.phonenumber}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Gender:</label>
+          <select
+            name="gender"
+            value={otherStaffData.gender}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+            required
+          >
+            <option value="" disabled>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
-            <div>
-              <label htmlFor="designation" className="block font-medium">Designation:</label>
-              <input
-                type="text"
-                id="designation"
-                name="designation"
-                value={otherStaffData.designation}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Age:</label>
+          <input
+            type="number"
+            name="age"
+            value={otherStaffData.age}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+            required
+          />
+        </div>
 
-            <div>
-              <label htmlFor="gender" className="block font-medium">Gender:</label>
-              <select
-                id="gender"
-                name="gender"
-                value={otherStaffData.gender}
-                onChange={handleChange}
-                className="input-field"
-                required
-              >
-                <option value="" disabled>Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Username:</label>
+          <input
+            type="text"
+            name="username"
+            value={otherStaffData.username}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+            required
+          />
+        </div>
 
-            <div>
-              <label htmlFor="age" className="block font-medium">Age:</label>
-              <input
-                type="number"
-                id="age"
-                name="age"
-                value={otherStaffData.age}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Park ID:</label>
+          <input
+            type="text"
+            name="parkid"
+            value={otherStaffData.parkid}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+            required
+          />
+        </div>
 
-            <div>
-              <label htmlFor="username" className="block font-medium">Username:</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={otherStaffData.username}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Password:</label>
+          <input
+            type="password"
+            name="pwd"
+            value={otherStaffData.pwd}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+            required
+          />
+        </div>
 
-            <div>
-              <label htmlFor="parkid" className="block font-medium">Park ID:</label>
-              <input
-                type="text"
-                id="parkid"
-                name="parkid"
-                value={otherStaffData.parkid}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">Last Login:</label>
+          <input
+            type="datetime-local"
+            name="last_login"
+            value={otherStaffData.last_login}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+          />
+        </div>
 
-          
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded transition duration-300 hover:bg-blue-600"
+        >
+          Register Staff
+        </button>
 
-            <div>
-              <label htmlFor="pwd" className="block font-medium">Password:</label>
-              <input
-                type="password"
-                id="pwd"
-                name="pwd"
-                value={otherStaffData.pwd}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
-
-      
-            <div>
-              <label htmlFor="last_login" className="block font-medium">Last Login:</label>
-              <input
-                type="datetime-local"
-                id="last_login"
-                name="last_login"
-                value={otherStaffData.last_login}
-                onChange={handleChange}
-                className="input-field"
-              />
-            </div>
-
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Register Staff</button>
-          </form>
-          {message && <p className="mt-4 text-red-500">{message}</p>}
-        </section>
-      </main>
+        {isModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
+      </form>
     </div>
   );
 };

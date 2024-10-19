@@ -26,6 +26,7 @@ from flask_app import (
     Delete_Doctor,
     Delete_Otherstaffs,
     Register_otherStaffs
+    Add_Other_Staff
 )
 
 app = Flask(__name__)
@@ -55,13 +56,17 @@ def admin_mode():
         }), 200
     return jsonify({"error": "Invalid password"}), 403
 
-@app.route('/admin/hire_doctor', methods=['POST'])
+@app.route('/Hire_Doctor', methods=['POST'])
 def hire_doctor():
-    return Hire_Doctor.Hire()
+    return Hire_Doctor.hire()
 
 @app.route('/add_patient', methods=['POST'])
 def add_newPatient():
     return Add_newPatient.add_new_patient()
+
+@app.route('/Add_Recept', methods=['POST'])
+def add_receptionist():
+    return Add_Receptionist.add_reception()
 
 @app.route('/login_pa', methods=['POST'])
 def Login_pa():
@@ -138,6 +143,9 @@ def Delete_staffs(s_id):
 @app.route('/register_other_staff', methods=['POST'])
 def Register_other_staff():
     return Register_otherStaffs.register_other_staff()
+@app.route('/otherstaffregister', methods=['POST'])
+def add_newStaff():
+    return Add_Other_Staff.add_new_other_staff()
 
 @app.route('/user', methods=['GET'])
 def user_mode():

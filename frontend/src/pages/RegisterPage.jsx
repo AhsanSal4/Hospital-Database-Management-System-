@@ -4,11 +4,13 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     username: '',
-    role: 'Doctor', // Default to Doctor
+    mobile_no: '',
+    role: 'DOCTOR', // Default value for role
     password: '',
     confirmPassword: '',
-    gender: '',
+    gender: 'MALE', // Default value for gender
     specialisation: '',
+    working_hrs: '',  // New field
     age: '',
     salary: '',
     fees: ''
@@ -23,46 +25,49 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+ 
     // Simple client-side validation
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
-      return;
+       alert('Passwords do not match');
+       return;
     }
-
-    const url = formData.role === 'Doctor' ? '/Hire_Doctor' : '/Add_Receptionist'; // Change endpoint based on role
-
-    // Send POST request to Flask backend
+ 
+    const url = formData.role === 'DOCTOR' ? 'http://localhost:5000/Hire_Doctor' : 'http://localhost:5000/Add_Recept'; 
+ 
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          username: formData.username,
-          password: formData.password,
-          gender: formData.gender,
-          specialisation: formData.specialisation,
-          age: formData.age,
-          salary: formData.salary,
-          fees: formData.fees,
-        }),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert('Registration successful');
-      } else {
-        alert(`Error: ${result.error}`);
-      }
+       const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+             'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+             fullName: formData.fullName,
+             username: formData.username,
+             mobile_no: formData.mobile_no,
+             password: formData.password,
+             gender: formData.gender,
+             specialisation: formData.role === 'DOCTOR' ? formData.specialisation : undefined, // Only include if role is Doctor
+             working_hrs: formData.working_hrs,  // New field
+             age: formData.age,
+             salary: formData.salary,
+             fees: formData.role === 'DOCTOR' ? formData.fees : undefined, // Only include if role is Doctor
+          }),
+       });
+ 
+       // Check if response is OK (status code 200–299)
+       if (response.ok) {
+          const result = await response.json(); // This may fail if the response is empty
+          alert('Registration successful');
+       } else {
+          const errorText = await response.text();  // Read response as text for non-200 statuses
+          alert(`Error: ${errorText}`);
+       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred during registration.');
+       console.error('Error:', error);
+       alert('An error occurred during registration.');
     }
-  };
-
+ };
+ 
   return (
     <div className="flex justify-center items-center min-h-screen bg-blue-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
@@ -89,6 +94,16 @@ const RegisterPage = () => {
             />
           </div>
           <div className="mb-4">
+            <label className="block mb-1">Mobile Number:</label>
+            <input
+              type="text"
+              name="mobile_no"
+              value={formData.mobile_no}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+            />
+          </div>
+          <div className="mb-4">
             <label className="block mb-1">Role:</label>
             <select
               name="role"
@@ -96,9 +111,44 @@ const RegisterPage = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded"
             >
-              <option value="Doctor">Doctor</option>
-              <option value="Receptionist">Receptionist</option>
+              <option value="DOCTOR">Doctor</option>
+              <option value="RECEPTIONIST">Receptionist</option>
             </select>
+          </div>
+          {/* Conditional Rendering for Specialisation and Consultation Fees */}
+          {formData.role === 'DOCTOR' && (
+            <>
+              <div className="mb-4">
+                <label className="block mb-1">Specialisation:</label>
+                <input
+                  type="text"
+                  name="specialisation"
+                  value={formData.specialisation}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-1">Consultation Fees:</label>
+                <input
+                  type="number"
+                  name="fees"
+                  value={formData.fees}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded"
+                />
+              </div>
+            </>
+          )}
+          <div className="mb-4">
+            <label className="block mb-1">Working Hours:</label>
+            <input
+              type="text"
+              name="working_hrs"
+              value={formData.working_hrs}  // New field
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+            />
           </div>
           <div className="mb-4">
             <label className="block mb-1">Gender:</label>
@@ -108,20 +158,10 @@ const RegisterPage = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded"
             >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
             </select>
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Specialisation:</label>
-            <input
-              type="text"
-              name="specialisation"
-              value={formData.specialisation}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-            />
           </div>
           <div className="mb-4">
             <label className="block mb-1">Age:</label>
@@ -139,16 +179,6 @@ const RegisterPage = () => {
               type="number"
               name="salary"
               value={formData.salary}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Fees:</label>
-            <input
-              type="number"
-              name="fees"
-              value={formData.fees}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded"
             />
@@ -173,7 +203,7 @@ const RegisterPage = () => {
               className="w-full px-4 py-2 border rounded"
             />
           </div>
-          <button className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700">
+          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
             Register
           </button>
         </form>

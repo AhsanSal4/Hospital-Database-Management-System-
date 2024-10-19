@@ -7,7 +7,7 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         <h1 className="text-white text-2xl">CityCare Hospital</h1>
         <div>
-      <Link to="/admin-dashboard">
+      <Link to="/admin-login">
       <button className="bg-white text-blue-700 px-4 py-2 rounded">Admin</button>
       </Link>
         </div>
