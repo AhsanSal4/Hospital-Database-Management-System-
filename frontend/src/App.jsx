@@ -30,6 +30,7 @@ import DeleteOtherStaffPage from './pages/admin-dashboard/DeleteOtherstaffPage';
 import RegisterOtherstaffPage from './pages/admin-dashboard/RegisterOtherstaffPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import ViewMedicines from './pages/admin-dashboard/ViewMedicines';
+import ManageMedicine from './pages/admin-dashboard/ManageMedicine';
 
 function App() {
   return (
@@ -66,6 +67,8 @@ function App() {
           <Route path="/register-otherstaff" element={<RegisterOtherstaffPage/>} />
           <Route path="/admin-login" element={<AdminLoginPage/>} />
           <Route path="/view-medicine" element={<ViewMedicines/>} />
+          <Route path="/manage-medicine" element={<ManageMedicine/>} />
+          
 
 
 

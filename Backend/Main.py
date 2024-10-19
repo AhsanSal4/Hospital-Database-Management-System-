@@ -72,6 +72,14 @@ def add_receptionist():
 def Login_pa():
     return login_p.loginp()
 
+@app.route('/login_do', methods=['POST'])
+def Login_do():
+    return login_p.logind()
+
+@app.route('/login_re', methods=['POST'])
+def Login_re():
+    return login_p.loginr()
+
 @app.route('/get_all_patients', methods=['GET'])
 def Get_all_patients():
     return Display_Patient.get_all_patients()
@@ -137,16 +145,10 @@ def Get_staffs(s_id):
 def Delete_staffs(s_id):
     return Delete_Otherstaffs.delete_staffs(s_id)
 
-@app.route('/register_other_staff', methods=['POST'])
-def Register_other_staff():
-    return Register_otherStaffs.register_other_staff()
 @app.route('/otherstaffregister', methods=['POST'])
 def add_newStaff():
     return Add_Other_Staff.add_new_other_staff()
 
-@app.route('/add_receptionist', methods=['POST'])
-def Add_receptionist():
-    return Hire_Doctor.add_receptionist()
 @app.route('/add_patient', methods=['POST'])
 
 @app.route('/user', methods=['GET'])

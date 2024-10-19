@@ -39,6 +39,7 @@ const AdminDashboard = () => {
               <DashboardCard title="Doctors" description="View, update, and manage doctor profiles." link="/manage-doctor" />
               <DashboardCard title="Receptionists" description="View, update, and manage receptionist records." link="/manage-receptionist" />
               <DashboardCard title="Other staffs" description="View, update, and manage other staffs." link="/manage-otherstaff" />
+              <DashboardCard title="Medicines" description="View, update, and manage Medicines." link="/manage-medicine" />
             </div>
           </div>
 

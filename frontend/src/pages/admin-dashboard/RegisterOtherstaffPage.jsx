@@ -1,234 +1,179 @@
 import React, { useState } from 'react';
 
-const RegisterPage = () => {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    username: '',
-    mobile_no: '',
-    role: 'DOCTOR', // Default value for role
-    password: '',
-    confirmPassword: '',
-    gender: 'MALE', // Default value for gender
-    specialisation: '',
-    working_hrs: '',  // New field for working hours
+const RegisterOtherstaffPage = () => {
+  const [otherStaffData, setOtherStaffData] = useState({
+    id: '',
+    name: '',
+    phonenumber: '',
+    designation: '',
+    gender: '',
     age: '',
-    salary: '',
-    fees: '', // Consultation fees (for doctors)
+    username: '',
+    parkid: '',
+    pwd: '',
   });
 
+  const [message, setMessage] = useState('');
+
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setOtherStaffData({ ...otherStaffData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Client-side validation for password match
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-
-    // Determine the URL based on the selected role
-    const url = formData.role === 'DOCTOR'
-      ? 'http://localhost:5000/Hire_Doctor'
-      : 'http://localhost:5000/Add_Recept';
-
     try {
-      const response = await fetch(url, {
+      const response = await fetch('http://localhost:5000/otherstaffregister', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          username: formData.username,
-          mobile_no: formData.mobile_no,
-          password: formData.password,
-          gender: formData.gender,
-          age: formData.age,
-          salary: formData.salary,
-          working_hrs: formData.working_hrs, // Common field for both Doctor and Receptionist
-          specialisation: formData.role === 'DOCTOR' ? formData.specialisation : undefined, // Only include if role is Doctor
-          fees: formData.role === 'DOCTOR' ? formData.fees : undefined, // Only include if role is Doctor
-        }),
+        body: JSON.stringify(otherStaffData),
       });
 
       if (response.ok) {
-        const result = await response.json(); // Parse response
-        alert('Registration successful');
+        setMessage('New staff member registered successfully!');
+        setOtherStaffData({
+          id: '',
+          name: '',
+          phonenumber: '',
+          designation: '',
+          gender: '',
+          age: '',
+          username: '',
+          pwd: '',
+        });
       } else {
-        const errorText = await response.text();  // Read error response as text
-        alert(`Error: ${errorText}`);
+        const errorData = await response.json();
+        setMessage(errorData.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred during registration.');
+      console.error('Error registering staff:', error);
+      setMessage('An error occurred while registering the staff.');
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-blue-50">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
-        <h2 className="text-2xl mb-4 text-center">Register</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block mb-1">Full name:</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Username:</label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Mobile Number:</label>
-            <input
-              type="text"
-              name="mobile_no"
-              value={formData.mobile_no}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Role:</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            >
-              <option value="DOCTOR">Doctor</option>
-              <option value="RECEPTIONIST">Receptionist</option>
-            </select>
-          </div>
+    <div className="min-h-screen flex flex-col bg-blue-50">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-blue-500 to-blue-400 text-white py-6 shadow-md">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold">CityCare Hospital</h1>
+          <p className="text-xl mt-2">Register New Staff</p>
+        </div>
+      </header>
 
-          {/* Conditional Rendering for Specialisation and Fees (Doctor Only) */}
-          {formData.role === 'DOCTOR' && (
-            <>
-              <div className="mb-4">
-                <label className="block mb-1">Specialisation:</label>
-                <input
-                  type="text"
-                  name="specialisation"
-                  value={formData.specialisation}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded"
-                  required={formData.role === 'DOCTOR'} // Required for doctors
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-1">Consultation Fees:</label>
-                <input
-                  type="number"
-                  name="fees"
-                  value={formData.fees}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded"
-                  required={formData.role === 'DOCTOR'} // Required for doctors
-                />
-              </div>
-            </>
-          )}
+      {/* Main Content */}
+      <main className="flex-grow flex justify-center items-center p-6">
+        <section className="bg-white p-8 border border-gray-300 rounded-lg shadow-md w-full max-w-md">
+          <form className="space-y-4" onSubmit={handleSubmit}>
 
-          <div className="mb-4">
-            <label className="block mb-1">Working Hours:</label>
-            <input
-              type="text"
-              name="working_hrs"
-              value={formData.working_hrs}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Gender:</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            >
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-              <option value="OTHER">Other</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Age:</label>
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Salary:</label>
-            <input
-              type="number"
-              name="salary"
-              value={formData.salary}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Password:</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Confirm Password:</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-          >
-            Register
-          </button>
-        </form>
-      </div>
+            <div>
+              <label htmlFor="name" className="block font-medium">Name:</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={otherStaffData.name}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="phonenumber" className="block font-medium">Phone Number:</label>
+              <input
+                type="tel"
+                id="phonenumber"
+                name="phonenumber"
+                value={otherStaffData.phonenumber}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="designation" className="block font-medium">Designation:</label>
+              <input
+                type="text"
+                id="designation"
+                name="designation"
+                value={otherStaffData.designation}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="gender" className="block font-medium">Gender:</label>
+              <select
+                id="gender"
+                name="gender"
+                value={otherStaffData.gender}
+                onChange={handleChange}
+                className="input-field"
+                required
+              >
+                <option value="" disabled>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="age" className="block font-medium">Age:</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                value={otherStaffData.age}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="username" className="block font-medium">Username:</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={otherStaffData.username}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+          
+
+            <div>
+              <label htmlFor="pwd" className="block font-medium">Password:</label>
+              <input
+                type="password"
+                id="pwd"
+                name="pwd"
+                value={otherStaffData.pwd}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+    
+
+            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Register Staff</button>
+          </form>
+          {message && <p className="mt-4 text-red-500">{message}</p>}
+        </section>
+      </main>
     </div>
   );
 };
 
-export default RegisterPage;
+export default RegisterOtherstaffPage;

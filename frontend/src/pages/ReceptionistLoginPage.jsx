@@ -11,7 +11,7 @@ const ReceptionistLoginPage = () => {
 
     // Check credentials against your backend
     try {
-      const response = await fetch('http://localhost:5000/login_pa', {
+      const response = await fetch('http://localhost:5000/login_re', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

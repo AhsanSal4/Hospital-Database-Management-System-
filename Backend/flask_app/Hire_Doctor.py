@@ -10,11 +10,11 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 # Function to connect to the database
 def get_db_connection():
     conn = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='Nibhin@137',
-        database='hospital'
-    )
+            host='localhost',
+            database='micro_project',  # Replace with your DB name
+            user='root',  # Replace with your MySQL username
+            password='mysql123'  # Replace with your MySQL password
+        )
     return conn
 
 # Function to generate a unique ID (for both doctors and receptionists)
@@ -86,69 +86,6 @@ def hire_doctor():
             cur.close()
         if db:
             db.close()
-
-# Route to add a receptionist
-@app.route('/add_receptionist', methods=['POST'])
-def add_receptionist():
-    db = None
-    cur = None
-    try:
-        # Retrieve data from the request body
-        data = request.get_json()
-        Receptionist_Name = data.get('fullName')
-        mobile_no = data.get('mobile_no')
-        Gender = data.get('gender')
-        Working_Hrs = data.get('working_hrs')
-        Age = data.get('age')
-        Salary = data.get('salary')
-        username = data.get('username')
-        Passwd = data.get('password')
-
-        # Validate input data
-        if not all([Receptionist_Name, mobile_no, Gender, Working_Hrs, Age, Salary, username, Passwd]):
-            return jsonify({'error': 'All fields are required'}), 400
-
-        if len(Passwd) <= 5:
-            return jsonify({'error': 'Password must be at least 6 characters long'}), 400
-
-        # Connect to the database
-        db = get_db_connection()
-        cur = db.cursor()
-
-        # Generate receptionist ID
-        rec_id = generate_unique_id('RE')
-
-        # Insert login credentials into the login table
-        dt_admit = datetime.now().strftime('%Y-%m-%d')
-        cur.execute("INSERT INTO login (Username, Pwd, role, Last_login) VALUES (%s, %s, %s, %s)", 
-                    (username, Passwd, 'RECEPTIONIST', dt_admit))
-
-        # Insert receptionist record into the database
-        query = """
-        INSERT INTO Receptionists (R_id, R_name, Ph_No, Working_hrs, Gender, Age, Salary, Username) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        values = (rec_id, Receptionist_Name, mobile_no, Working_Hrs, Gender, Age, Salary, username)
-        cur.execute(query, values)
-        db.commit()
-
-        return jsonify({'message': 'Receptionist record inserted successfully', 'recept_id': rec_id}), 201
-
-    except mysql.connector.Error as db_error:
-        # Handle specific database-related errors
-        return jsonify({'error': f'Database error: {str(db_error)}'}), 500
-
-    except Exception as error:
-        # Handle generic errors
-        return jsonify({'error': f'An error occurred: {str(error)}'}), 500
-
-    finally:
-        # Ensure cursor and db connection are safely closed
-        if cur is not None:
-            cur.close()
-        if db is not None:
-            db.close()
-
 
 if __name__ == '__main__':
     app.run(debug=True)

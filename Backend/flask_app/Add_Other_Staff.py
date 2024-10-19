@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector as myc
 import random
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/add_other_staff": {"origins": "http://localhost:5173"}})
@@ -33,7 +34,7 @@ def add_new_other_staff():
         gender = data.get('gender')
         age = data.get('age')
         username = data.get('username')
-        password = data.get('password')
+        password = data.get('pwd')
 
         staff_id = generate_staff_id()
 
@@ -43,7 +44,7 @@ def add_new_other_staff():
 
         # Insert login credentials into the login table
         cur.execute("INSERT INTO login (username, pwd, role, last_login) VALUES (%s, %s, %s, %s)", 
-                    (username,password,designation, None))  # You can change 'default_password' as needed
+                    (username,password ,designation,datetime.now()))  # You can change 'default_password' as needed
 
         # Insert other staff details into the OtherStaff table
         cur.execute("""
