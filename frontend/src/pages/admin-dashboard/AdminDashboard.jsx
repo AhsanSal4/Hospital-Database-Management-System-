@@ -7,7 +7,16 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-blue-50 flex flex-col">
       {/* Navbar */}
-      <Navbar />
+      <nav className="bg-blue-700 p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <h1 className="text-white text-2xl">CityCare Hospital</h1>
+        <div>
+      <Link to="/">
+      <button className="bg-white text-blue-700 px-4 py-2 rounded">Log Out</button>
+      </Link>
+        </div>
+      </div>
+    </nav>
 
       {/* Main Content */}
       <div className="flex-grow container mx-auto py-8">
@@ -30,6 +39,7 @@ const AdminDashboard = () => {
               <DashboardCard title="Doctors" description="View, update, and manage doctor profiles." link="/manage-doctor" />
               <DashboardCard title="Receptionists" description="View, update, and manage receptionist records." link="/manage-receptionist" />
               <DashboardCard title="Other staffs" description="View, update, and manage other staffs." link="/manage-otherstaff" />
+              <DashboardCard title="Medicines" description="View, update, and manage Medicines." link="/manage-medicine" />
             </div>
           </div>
 
