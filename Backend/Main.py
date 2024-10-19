@@ -25,7 +25,7 @@ from flask_app import (
     Delete_Patient,
     Delete_Doctor,
     Delete_Otherstaffs,
-    Register_otherStaffs
+    Register_otherStaffs,
     Add_Other_Staff
 )
 
@@ -105,9 +105,6 @@ def Update_rece():
 @app.route('/update_otherstaff', methods=['PUT'])
 def Update_Staff():
     return UpdateStaff.update_otherstaff()
-@app.route('/admin/display_doctors', methods=['GET'])
-def display_doctors():
-    return Display_Doc_Adm.Display_Adm()
 @app.route('/get_patient/<patient_id>', methods=['GET'])
 def Get_patiEnts(patient_id):
     return Delete_Patient.get_patient(patient_id)

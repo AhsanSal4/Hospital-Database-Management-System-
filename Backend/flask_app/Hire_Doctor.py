@@ -28,8 +28,6 @@ def get_db_connection():
 def generate_doctor_id():
     return random.choice('ABCDEFGHIJKLmnopqrstuvwxyz') + ''.join(random.choices('1234567890', k=3))
 
-@app.route('/admin/hire_doctor', methods=['POST'])
-def hire_doctor():
 @app.route('/Hire_Doctor', methods=['POST'])
 def hire():
     db = None

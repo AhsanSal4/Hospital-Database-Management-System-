@@ -49,7 +49,7 @@ def add_new_patient():
         # Insert login credentials into the login table
         cur.execute("INSERT INTO login (username, pwd, role, last_login) VALUES (%s, %s, %s, %s)", 
                     (username, password, patient_name, dt_admit))
-                    (username, password, 'PATIENT', dt_admit))
+        
 
         # Insert patient details into the Patient table
         p_code = generate_random_code()
