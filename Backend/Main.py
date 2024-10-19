@@ -172,21 +172,10 @@ def add_newStaff():
 def med_reg():
     return Add_Medicine.add_new_medicine()
 
-@app.route('/patient/<p_id>', methods=['GET'])
-def Get_patient(p_id):
-    return Patient_dashboard.get_patient(p_id)
+@app.route('/patient_dashboard', methods=['POST'])
+def patient_dashboard_route():  # Changed function name to avoid conflict
+    return Patient_dashboard.patient_dashboard()
 
-@app.route('/patient', methods=['POST'])
-def Add_patient():
-    return Patient_dashboard.add_patient()
-
-@app.route('/patient/<p_id>', methods=['PUT'])
-def Update_patient(p_id):
-    return Patient_dashboard.update_patient(p_id)
-
-@app.route('/patient/<p_id>', methods=['DELETE'])
-def Delete_patient(p_id):
-    return Patient_dashboard.delete_patient(p_id)
 @app.route('/user', methods=['GET'])
 def user_mode():
     return jsonify({

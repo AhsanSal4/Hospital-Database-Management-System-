@@ -1,167 +1,81 @@
-from flask import Flask, jsonify, request
-import mysql.connector
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+import mysql.connector
+from datetime import datetime
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app)  # Enable CORS for all routes
 
-# Function to connect to the MySQL database
+# Database connection
 def get_db_connection():
     conn = mysql.connector.connect(
         host='localhost',
-        user='root',
-        password='Nibhin@137',  # Replace with your MySQL password
-        database='hospital'
+        user='root',  # Replace with your DB user
+        password='Nibhin@137',  # Replace with your DB password
+        database='hospital'  # Replace with your DB name
     )
     return conn
 
-# Route to get patient details by patient ID
-@app.route('/patient/<p_id>', methods=['GET'])
-def get_patient(p_id):
-    db = None
-    cur = None
+# Fetch Patient Dashboard Data
+@app.route('/patient_dashboard', methods=['POST'])
+def patient_dashboard():
+    data = request.json
+    print(f"Received request body: {data}")  # Print the entire request body
+    
+    username = data.get('username')
+    print(f"Extracted username: {username}")  # Print the extracted username
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
     try:
-        # Connect to the database
-        db = get_db_connection()
-        cur = db.cursor(dictionary=True)
-
-        # Fetch the patient details using the P_id
-        query = "SELECT * FROM patients WHERE P_id = %s"
-        cur.execute(query, (p_id,))
-        patient = cur.fetchone()
-
-        if not patient:
-            return jsonify({'error': 'Patient not found'}), 404
-
-        return jsonify(patient), 200
-
-    except Exception as error:
-        return jsonify({'error': str(error)}), 500
-
-    finally:
-        if cur:
-            cur.close()
-        if db:
-            db.close()
-
-# Route to add a new patient
-@app.route('/patient', methods=['POST'])
-def add_patient():
-    db = None
-    cur = None
-    try:
-        data = request.get_json()
-        P_id = data.get('P_id')
-        P_name = data.get('P_name')
-        Ph_No = data.get('Ph_No')
-        Height_cm = data.get('Height_cm')
-        Weight_kg = data.get('Weight_kg')
-        Gender = data.get('Gender')
-        Age = data.get('Age')
-        Dt_admit = data.get('Dt_admit')
-        Disease = data.get('Disease')
-        Med_prescribed = data.get('Med_prescribed')
-        Username = data.get('Username')
-        Dr_id = data.get('Dr_id')
-        Park_id = data.get('Park_id')
-
-        # Validate required fields
-        if not all([P_id, P_name, Ph_No, Gender, Age, Dt_admit, Username]):
-            return jsonify({'error': 'All required fields must be filled'}), 400
-
-        # Connect to the database
-        db = get_db_connection()
-        cur = db.cursor()
-
-        # Insert patient data into the patients table
+        # Fetch patient details using username
         query = """
-        INSERT INTO patients (P_id, P_name, Ph_No, Height_cm, Weight_kg, Gender, Age, Dt_admit, Disease, Med_prescribed, Username, Dr_id, Park_id)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        SELECT p.P_id, p.P_name, p.Age, p.Gender, p.Ph_No, p.Disease, p.Med_prescribed, p.Dr_id, d.Dr_name
+        FROM patients p
+        LEFT JOIN doctors d ON p.Dr_id = d.Dr_id
+        WHERE p.Username = %s
         """
-        values = (P_id, P_name, Ph_No, Height_cm, Weight_kg, Gender, Age, Dt_admit, Disease, Med_prescribed, Username, Dr_id, Park_id)
-        cur.execute(query, values)
-        db.commit()
+        cursor.execute(query, (username,))
+        patient = cursor.fetchone()
 
-        return jsonify({'message': 'Patient record inserted successfully'}), 201
+        # If patient is found, structure the response
+        if patient:
+            response = {
+                "success": True,
+                "patientID": patient['P_id'],
+                "fullName": patient['P_name'],
+                "age": patient['Age'],
+                "gender": patient['Gender'],
+                "contactNumber": str(patient['Ph_No']),
+                "pastDiseases": patient['Disease'] or "No past diseases recorded",
+                "prescribedMedicines": patient['Med_prescribed'] or "No medicines prescribed",
+                "attendingDoctor": patient['Dr_name'] or "Not assigned",
+                "treatmentRecords": "No records available",  # Placeholder
+                "bills": {
+                    "previousBills": "No previous bills",  # Placeholder
+                    "currentBills": "No current bills",  # Placeholder
+                    "billPayments": "No payments made",  # Placeholder
+                },
+                "medicalReports": "No reports available",  # Placeholder
+                "emergencyContact": {
+                    "name": "Not available",  # Placeholder
+                    "phone": "Not available",  # Placeholder
+                    "relation": "Not available"  # Placeholder
+                }
+            }
+            return jsonify(response), 200
 
-    except Exception as error:
-        return jsonify({'error': str(error)}), 500
+        # If no patient is found, return an error response
+        return jsonify({"success": False, "message": "Patient not found"}), 404
 
-    finally:
-        if cur:
-            cur.close()
-        if db:
-            db.close()
-
-# Route to update patient information
-@app.route('/patient/<p_id>', methods=['PUT'])
-def update_patient(p_id):
-    db = None
-    cur = None
-    try:
-        data = request.get_json()
-        P_name = data.get('P_name')
-        Ph_No = data.get('Ph_No')
-        Height_cm = data.get('Height_cm')
-        Weight_kg = data.get('Weight_kg')
-        Gender = data.get('Gender')
-        Age = data.get('Age')
-        Dt_admit = data.get('Dt_admit')
-        Disease = data.get('Disease')
-        Med_prescribed = data.get('Med_prescribed')
-        Dr_id = data.get('Dr_id')
-        Park_id = data.get('Park_id')
-
-        # Connect to the database
-        db = get_db_connection()
-        cur = db.cursor()
-
-        # Update patient record in the patients table
-        query = """
-        UPDATE patients
-        SET P_name = %s, Ph_No = %s, Height_cm = %s, Weight_kg = %s, Gender = %s, Age = %s, Dt_admit = %s, Disease = %s, Med_prescribed = %s, Dr_id = %s, Park_id = %s
-        WHERE P_id = %s
-        """
-        values = (P_name, Ph_No, Height_cm, Weight_kg, Gender, Age, Dt_admit, Disease, Med_prescribed, Dr_id, Park_id, p_id)
-        cur.execute(query, values)
-        db.commit()
-
-        return jsonify({'message': 'Patient record updated successfully'}), 200
-
-    except Exception as error:
-        return jsonify({'error': str(error)}), 500
+    except Exception as e:
+        print(f"Error fetching patient details: {e}")
+        return jsonify({"success": False, "message": "Server error"}), 500
 
     finally:
-        if cur:
-            cur.close()
-        if db:
-            db.close()
-
-# Route to delete a patient record by patient ID
-@app.route('/patient/<p_id>', methods=['DELETE'])
-def delete_patient(p_id):
-    db = None
-    cur = None
-    try:
-        # Connect to the database
-        db = get_db_connection()
-        cur = db.cursor()
-
-        # Delete patient record from the database
-        query = "DELETE FROM patients WHERE P_id = %s"
-        cur.execute(query, (p_id,))
-        db.commit()
-
-        return jsonify({'message': 'Patient record deleted successfully'}), 200
-
-    except Exception as error:
-        return jsonify({'error': str(error)}), 500
-
-    finally:
-        if cur:
-            cur.close()
-        if db:
-            db.close()
+        cursor.close()
+        conn.close()
 
 if __name__ == '__main__':
     app.run(debug=True)

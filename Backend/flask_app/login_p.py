@@ -38,8 +38,10 @@ def loginp():
         user = cursor.fetchone()
         
         if user:
+            # Successful login
             return jsonify({"success": True, "message": "Login successful"})
         else:
+            # Invalid credentials
             return jsonify({"success": False, "message": "Invalid username or password"}), 401
     except Exception as e:
         print(f"Error updating last login or validating user: {e}")
