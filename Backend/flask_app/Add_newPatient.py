@@ -47,14 +47,9 @@ def add_new_patient():
         cur.execute("INSERT INTO Parking (Park_id, Owner) VALUES (%s, %s)", (park_id, patient_name))
 
         # Insert login credentials into the login table
-<<<<<<< HEAD
-        cur.execute("INSERT INTO login (username, pwd, role, last_login) VALUES (%s, %s, %s, %s)", 
-                    (username, password, patient_name, dt_admit))
-=======
         cur.execute("INSERT INTO login (Username, Pwd, role, Last_login) VALUES (%s, %s, %s, %s)", 
                     (username, password, "PATIENT", dt_admit))
         
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
 
         # Insert patient details into the Patient table
         p_code = generate_random_code()

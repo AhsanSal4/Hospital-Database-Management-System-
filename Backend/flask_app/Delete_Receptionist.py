@@ -11,15 +11,9 @@ def create_db_connection():
     try:
         connection = mysql.connector.connect(
             host='localhost',
-<<<<<<< HEAD
             database='hospital',  # Replace with your DB name
             user='root',  # Replace with your MySQL username
             password='Nibhin@137'  # Replace with your MySQL password
-=======
-            database='micro_project',  # Replace with your DB name
-            user='root',  # Replace with your MySQL username
-            password='mysql123'  # Replace with your MySQL password
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
         )
         if connection.is_connected():
             return connection

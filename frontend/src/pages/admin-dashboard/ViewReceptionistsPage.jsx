@@ -71,10 +71,7 @@ const ViewReceptionistPage = () => {
             <tbody>
               {receptionists.map((receptionist) => (
                 <tr key={receptionist.R_id}>
-<<<<<<< HEAD
-=======
                   <td className="px-4 py-2 border">{receptionist.R_id}</td>                 
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
                   <td className="px-4 py-2 border">{receptionist.R_name}</td>
                   <td className="px-4 py-2 border">{receptionist.Gender}</td>
                   <td className="px-4 py-2 border">{receptionist.Age}</td>

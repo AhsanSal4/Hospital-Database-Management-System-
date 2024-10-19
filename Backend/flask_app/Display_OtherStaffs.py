@@ -10,17 +10,10 @@ CORS(app)  # Allow cross-origin requests from your React app
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
-<<<<<<< HEAD
             host='localhost',  # Replace with your host
             user='root',  # Replace with your MySQL username
             password='Nibhin@137',  # Replace with your MySQL password
             database='hospital'  # Replace with your database name
-=======
-            host='localhost',
-            database='micro_project',  # Replace with your DB name
-            user='root',  # Replace with your MySQL username
-            password='mysql123'  # Replace with your MySQL password
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
         )
         return connection
     except Error as e:

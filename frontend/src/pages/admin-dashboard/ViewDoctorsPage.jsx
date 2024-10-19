@@ -39,10 +39,7 @@ const ViewDoctorsPage = () => {
           <tbody>
             {doctors.map((doctor) => (
               <tr key={doctor.id} className="hover:bg-gray-100 transition duration-300">
-<<<<<<< HEAD
-=======
                 <td className="py-3 px-5">{doctor.Dr_id}</td>
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
                 <td className="py-3 px-5">{doctor.Dr_name}</td>
                 <td className="py-3 px-5">{doctor.Gender}</td>
                 <td className="py-3 px-5">{doctor.Specialization}</td>

@@ -47,10 +47,7 @@ const ViewPatientsPage = () => {
                   key={index}
                   className="hover:bg-blue-100 transition-colors duration-300"
                 >
-<<<<<<< HEAD
-=======
                   <td className="py-2 px-4 border-b border-gray-200">{patient.P_id}</td>
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
                   <td className="py-2 px-4 border-b border-gray-200">{patient.P_name}</td>
                   <td className="py-2 px-4 border-b border-gray-200">{patient.Ph_No}</td>
                   <td className="py-2 px-4 border-b border-gray-200">{patient.Gender}</td>

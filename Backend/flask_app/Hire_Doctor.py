@@ -2,38 +2,18 @@ from flask import Flask, jsonify, request
 import mysql.connector
 import random
 from flask_cors import CORS
-<<<<<<< HEAD
-
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-=======
 from datetime import datetime  # For getting the current date
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
 
 # Function to connect to the database
 def get_db_connection():
     conn = mysql.connector.connect(
-<<<<<<< HEAD
         host='localhost',
         user='root',
         password='Nibhin@137',
         database='hospital'
-    )
-    return conn
-
-# Function to generate a unique doctor ID
-def generate_doctor_id():
-    return random.choice('ABCDEFGHIJKLmnopqrstuvwxyz') + ''.join(random.choices('1234567890', k=3))
-
-@app.route('/admin/hire_doctor', methods=['POST'])
-=======
-            host='localhost',
-            database='micro_project',  # Replace with your DB name
-            user='root',  # Replace with your MySQL username
-            password='mysql123'  # Replace with your MySQL password
         )
     return conn
 
@@ -47,7 +27,6 @@ def generate_park_id():
 
 # Route to hire a doctor
 @app.route('/Hire_Doctor', methods=['POST'])
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
 def hire_doctor():
     db = None
     cur = None
@@ -80,19 +59,6 @@ def hire_doctor():
         dr_id = generate_unique_id('DR')
         park_id = generate_park_id()
 
-<<<<<<< HEAD
-        # Insert doctor record into the database
-        query = "INSERT INTO Doctor (dr_id, Doctor_Name, Gender, Specialisation, Age, Salary, Fees, Passwd) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (dr_id, Doctor_Name, Gender, Specialisation, Age, Salary, Fees, Passwd)
-        cur.execute(query, values)
-        db.commit()
-
-        response = {
-            'message': 'Doctor record inserted successfully',
-            'dr_id': dr_id
-        }
-        return jsonify(response), 201
-=======
         # Insert into the Parking table (optional)
         cur.execute("INSERT INTO Parking (park_id, owner) VALUES (%s, %s)", (park_id, Doctor_Name))
 
@@ -111,7 +77,6 @@ def hire_doctor():
         db.commit()
 
         return jsonify({'message': 'Doctor record inserted successfully', 'dr_id': dr_id}), 201
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
 
     except Exception as error:
         return jsonify({'error': str(error)}), 500

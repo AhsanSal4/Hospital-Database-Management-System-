@@ -17,10 +17,7 @@ from flask_app import (
     Add_Medicine,
     Bill,
     login_p,
-<<<<<<< HEAD
-=======
     login_adm,
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
     Display_OtherStaffs,
     Update_Patient,
     UpdateReceptionists,
@@ -29,13 +26,10 @@ from flask_app import (
     Delete_Patient,
     Delete_Doctor,
     Delete_Otherstaffs,
-<<<<<<< HEAD
-    Register_otherStaffs
-=======
     DeleteMed,
     Add_Other_Staff,
-    UpdateMedicine
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
+    UpdateMedicine,
+    Patient_dashboard
 )
 
 app = Flask(__name__)
@@ -81,8 +75,6 @@ def add_receptionist():
 def Login_pa():
     return login_p.loginp()
 
-<<<<<<< HEAD
-=======
 @app.route('/login_do', methods=['POST'])
 def Login_do():
     return login_p.logind()
@@ -99,7 +91,6 @@ def up_med():
 def Login_re():
     return login_p.loginr()
 
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
 @app.route('/get_all_patients', methods=['GET'])
 def Get_all_patients():
     return Display_Patient.get_all_patients()
@@ -133,12 +124,6 @@ def Update_rece():
 @app.route('/update_otherstaff', methods=['PUT'])
 def Update_Staff():
     return UpdateStaff.update_otherstaff()
-<<<<<<< HEAD
-@app.route('/admin/display_doctors', methods=['GET'])
-def display_doctors():
-    return Display_Doc_Adm.Display_Adm()
-=======
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
 @app.route('/get_patient/<patient_id>', methods=['GET'])
 def Get_patiEnts(patient_id):
     return Delete_Patient.get_patient(patient_id)
@@ -163,8 +148,6 @@ def Get_doctors(dr_id):
 def Delete_doctors(dr_id):
     return Delete_Doctor.delete_doctors(dr_id)
 
-<<<<<<< HEAD
-=======
 @app.route('/get_medicine/<m_id>', methods=['GET'])
 def Get_med(m_id):
     return DeleteMed.get_medicine(m_id)
@@ -173,7 +156,6 @@ def Get_med(m_id):
 def Delete_med(m_id):
     return DeleteMed.delete_medicine(m_id)
 
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
 @app.route('/get_staffs/<s_id>', methods=['GET'])
 def Get_staffs(s_id):
     return Delete_Otherstaffs.get_staffs(s_id)
@@ -182,11 +164,6 @@ def Get_staffs(s_id):
 def Delete_staffs(s_id):
     return Delete_Otherstaffs.delete_staffs(s_id)
 
-<<<<<<< HEAD
-@app.route('/register_other_staff', methods=['POST'])
-def Register_other_staff():
-    return Register_otherStaffs.register_other_staff()
-=======
 @app.route('/otherstaffregister', methods=['POST'])
 def add_newStaff():
     return Add_Other_Staff.add_new_other_staff()
@@ -194,8 +171,22 @@ def add_newStaff():
 @app.route('/medicineregister', methods=['POST'])
 def med_reg():
     return Add_Medicine.add_new_medicine()
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
 
+@app.route('/patient/<p_id>', methods=['GET'])
+def Get_patient(p_id):
+    return Patient_dashboard.get_patient(p_id)
+
+@app.route('/patient', methods=['POST'])
+def Add_patient():
+    return Patient_dashboard.add_patient()
+
+@app.route('/patient/<p_id>', methods=['PUT'])
+def Update_patient(p_id):
+    return Patient_dashboard.update_patient(p_id)
+
+@app.route('/patient/<p_id>', methods=['DELETE'])
+def Delete_patient(p_id):
+    return Patient_dashboard.delete_patient(p_id)
 @app.route('/user', methods=['GET'])
 def user_mode():
     return jsonify({

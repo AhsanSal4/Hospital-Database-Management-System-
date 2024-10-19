@@ -11,12 +11,6 @@ const RegisterOtherstaffPage = () => {
     username: '',
     parkid: '',
     pwd: '',
-<<<<<<< HEAD
-    role: '', // Changed to text input
-    owner: '', // New field for parking owner
-    last_login: '', // New field for last login
-=======
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
   });
 
   const [message, setMessage] = useState('');
@@ -29,11 +23,7 @@ const RegisterOtherstaffPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-<<<<<<< HEAD
-      const response = await fetch('http://localhost:5000/register_other_staff', {
-=======
       const response = await fetch('http://localhost:5000/otherstaffregister', {
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,15 +41,7 @@ const RegisterOtherstaffPage = () => {
           gender: '',
           age: '',
           username: '',
-<<<<<<< HEAD
-          parkid: '',
           pwd: '',
-          role: '',
-          owner: '', // Reset the owner field
-          last_login: '', // Reset the last login field
-=======
-          pwd: '',
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
         });
       } else {
         const errorData = await response.json();
@@ -183,39 +165,8 @@ const RegisterOtherstaffPage = () => {
               />
             </div>
 
-<<<<<<< HEAD
-          
-
-            <div>
-              <label htmlFor="pwd" className="block font-medium">Password:</label>
-              <input
-                type="password"
-                id="pwd"
-                name="pwd"
-                value={otherStaffData.pwd}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
-
-      
-            <div>
-              <label htmlFor="last_login" className="block font-medium">Last Login:</label>
-              <input
-                type="datetime-local"
-                id="last_login"
-                name="last_login"
-                value={otherStaffData.last_login}
-                onChange={handleChange}
-                className="input-field"
-              />
-            </div>
-
-=======
     
 
->>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9
             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Register Staff</button>
           </form>
           {message && <p className="mt-4 text-red-500">{message}</p>}
