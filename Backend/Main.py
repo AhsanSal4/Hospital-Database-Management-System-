@@ -150,7 +150,7 @@ def Delete_doctors(dr_id):
 @app.route('/get_medicine/<m_id>', methods=['GET'])
 def Get_med(m_id):
     return DeleteMed.get_medicine(m_id)
-
+ 
 @app.route('/delete_medicine/<m_id>', methods=['DELETE'])
 def Delete_med(m_id):
     return DeleteMed.delete_medicine(m_id)
