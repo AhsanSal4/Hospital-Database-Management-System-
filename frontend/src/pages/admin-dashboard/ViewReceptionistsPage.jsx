@@ -59,6 +59,7 @@ const ViewReceptionistPage = () => {
           <table className="min-w-full table-auto">
             <thead>
               <tr>
+                <th className="px-4 py-2 border">ID</th>
                 <th className="px-4 py-2 border">Receptionist Name</th>
                 <th className="px-4 py-2 border">Gender</th>
                 <th className="px-4 py-2 border">Age</th>
@@ -70,6 +71,7 @@ const ViewReceptionistPage = () => {
             <tbody>
               {receptionists.map((receptionist) => (
                 <tr key={receptionist.R_id}>
+                  <td className="px-4 py-2 border">{receptionist.R_id}</td>                 
                   <td className="px-4 py-2 border">{receptionist.R_name}</td>
                   <td className="px-4 py-2 border">{receptionist.Gender}</td>
                   <td className="px-4 py-2 border">{receptionist.Age}</td>

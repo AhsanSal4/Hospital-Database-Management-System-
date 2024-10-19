@@ -32,7 +32,7 @@ const RegisterPage = () => {
        return;
     }
  
-    const url = formData.role === 'DOCTOR' ? 'http://localhost:5000/Hire_Doctor' : 'http://localhost:5000/Add_Recept'; 
+    const url = formData.role === 'DOCTOR' ? 'http://localhost:5000/Hire_Doctor' : 'http://localhost:5000/add_receptionist'; 
  
     try {
        const response = await fetch(url, {

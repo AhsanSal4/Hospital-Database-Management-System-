@@ -58,7 +58,7 @@ def admin_mode():
 
 @app.route('/Hire_Doctor', methods=['POST'])
 def hire_doctor():
-    return Hire_Doctor.hire()
+    return Hire_Doctor.hire_doctor()
 
 @app.route('/add_patient', methods=['POST'])
 def add_newPatient():
@@ -143,6 +143,11 @@ def Register_other_staff():
 @app.route('/otherstaffregister', methods=['POST'])
 def add_newStaff():
     return Add_Other_Staff.add_new_other_staff()
+
+@app.route('/add_receptionist', methods=['POST'])
+def Add_receptionist():
+    return Hire_Doctor.add_receptionist()
+@app.route('/add_patient', methods=['POST'])
 
 @app.route('/user', methods=['GET'])
 def user_mode():

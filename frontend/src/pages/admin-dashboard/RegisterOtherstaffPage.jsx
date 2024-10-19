@@ -1,198 +1,234 @@
 import React, { useState } from 'react';
-import Modal from '../../components/Modal'; // Make sure the path is correct
 
-const RegisterOtherstaffPage = () => {
-  const [otherStaffData, setOtherStaffData] = useState({
-    name: '',
-    phonenumber: '',
-    designation: '',
-    gender: '',
-    age: '',
+const RegisterPage = () => {
+  const [formData, setFormData] = useState({
+    fullName: '',
     username: '',
-    parkid: '',
-    pwd: '',
-    role: '',
-    owner: '',
-    last_login: '',
+    mobile_no: '',
+    role: 'DOCTOR', // Default value for role
     password: '',
+    confirmPassword: '',
+    gender: 'MALE', // Default value for gender
+    specialisation: '',
+    working_hrs: '',  // New field for working hours
+    age: '',
+    salary: '',
+    fees: '', // Consultation fees (for doctors)
   });
 
-  const [modalMessage, setModalMessage] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setOtherStaffData({ ...otherStaffData, [name]: value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Client-side validation for password match
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    // Determine the URL based on the selected role
+    const url = formData.role === 'DOCTOR'
+      ? 'http://localhost:5000/Hire_Doctor'
+      : 'http://localhost:5000/Add_Recept';
+
     try {
-      const response = await fetch('http://localhost:5000/register_other_staff', {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(otherStaffData),
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          username: formData.username,
+          mobile_no: formData.mobile_no,
+          password: formData.password,
+          gender: formData.gender,
+          age: formData.age,
+          salary: formData.salary,
+          working_hrs: formData.working_hrs, // Common field for both Doctor and Receptionist
+          specialisation: formData.role === 'DOCTOR' ? formData.specialisation : undefined, // Only include if role is Doctor
+          fees: formData.role === 'DOCTOR' ? formData.fees : undefined, // Only include if role is Doctor
+        }),
       });
 
-      const data = await response.json(); // Capture response data
       if (response.ok) {
-        setModalMessage('New staff member registered successfully!');
-        setOtherStaffData({ // Reset the form
-          name: '',
-          phonenumber: '',
-          designation: '',
-          gender: '',
-          age: '',
-          username: '',
-          parkid: '',
-          pwd: '',
-          role: '',
-          owner: '',
-          last_login: '',
-          password: '',
-        });
+        const result = await response.json(); // Parse response
+        alert('Registration successful');
       } else {
-        setModalMessage('Error: ' + (data.message || 'Registration failed.'));
+        const errorText = await response.text();  // Read error response as text
+        alert(`Error: ${errorText}`);
       }
     } catch (error) {
-      console.error('Error registering staff:', error);
-      setModalMessage('Error: ' + error.message);
+      console.error('Error:', error);
+      alert('An error occurred during registration.');
     }
-    setIsModalOpen(true); // Open the modal after submit
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
-      <h1 className="text-3xl font-bold mb-8 text-blue-600">Register New Staff</h1>
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-8 max-w-lg w-full space-y-4">
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={otherStaffData.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
+    <div className="flex justify-center items-center min-h-screen bg-blue-50">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
+        <h2 className="text-2xl mb-4 text-center">Register</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block mb-1">Full name:</label>
+            <input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Username:</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Mobile Number:</label>
+            <input
+              type="text"
+              name="mobile_no"
+              value={formData.mobile_no}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Role:</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            >
+              <option value="DOCTOR">Doctor</option>
+              <option value="RECEPTIONIST">Receptionist</option>
+            </select>
+          </div>
 
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Phone Number:</label>
-          <input
-            type="tel"
-            name="phonenumber"
-            value={otherStaffData.phonenumber}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
+          {/* Conditional Rendering for Specialisation and Fees (Doctor Only) */}
+          {formData.role === 'DOCTOR' && (
+            <>
+              <div className="mb-4">
+                <label className="block mb-1">Specialisation:</label>
+                <input
+                  type="text"
+                  name="specialisation"
+                  value={formData.specialisation}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded"
+                  required={formData.role === 'DOCTOR'} // Required for doctors
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-1">Consultation Fees:</label>
+                <input
+                  type="number"
+                  name="fees"
+                  value={formData.fees}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded"
+                  required={formData.role === 'DOCTOR'} // Required for doctors
+                />
+              </div>
+            </>
+          )}
 
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Designation:</label>
-          <input
-            type="text"
-            name="designation"
-            value={otherStaffData.designation}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Gender:</label>
-          <select
-            name="gender"
-            value={otherStaffData.gender}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            required
+          <div className="mb-4">
+            <label className="block mb-1">Working Hours:</label>
+            <input
+              type="text"
+              name="working_hrs"
+              value={formData.working_hrs}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Gender:</label>
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            >
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Age:</label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Salary:</label>
+            <input
+              type="number"
+              name="salary"
+              value={formData.salary}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Password:</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Confirm Password:</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
           >
-            <option value="" disabled>Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Age:</label>
-          <input
-            type="number"
-            name="age"
-            value={otherStaffData.age}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Username:</label>
-          <input
-            type="text"
-            name="username"
-            value={otherStaffData.username}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Park ID:</label>
-          <input
-            type="text"
-            name="parkid"
-            value={otherStaffData.parkid}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Password:</label>
-          <input
-            type="password"
-            name="pwd"
-            value={otherStaffData.pwd}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-bold mb-2">Last Login:</label>
-          <input
-            type="datetime-local"
-            name="last_login"
-            value={otherStaffData.last_login}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded transition duration-300 hover:bg-blue-600"
-        >
-          Register Staff
-        </button>
-
-        {isModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
-      </form>
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default RegisterOtherstaffPage;
+export default RegisterPage;

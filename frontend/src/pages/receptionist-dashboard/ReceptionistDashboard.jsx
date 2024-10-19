@@ -23,6 +23,16 @@ const ReceptionistDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full px-6 max-w-4xl">
         {/* Card 1: Register New Patient */}
         <div className="bg-white rounded-lg shadow-lg p-6 hover:scale-105 transition-transform duration-300 ease-in-out">
+          <h2 className="text-xl font-semibold text-blue-500">View Patients</h2>
+          <p className="text-gray-600 mt-2">To view all patients.</p>
+          <button
+            onClick={() => navigate("/view-patients")}
+            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+          >
+            View Patients
+          </button>
+        </div>
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:scale-105 transition-transform duration-300 ease-in-out">
           <h2 className="text-xl font-semibold text-blue-500">Register New Patient</h2>
           <p className="text-gray-600 mt-2">Add a new patient and their details.</p>
           <button

@@ -26,6 +26,7 @@ const ViewDoctorsPage = () => {
         <table className="min-w-full bg-white shadow-md rounded-lg">
           <thead className="bg-blue-600 text-white">
             <tr>
+              <th className="py-3 px-5">Dr.ID</th>
               <th className="py-3 px-5">Full Name</th>
               <th className="py-3 px-5">Gender</th>
               <th className="py-3 px-5">Specialisation</th>
@@ -38,6 +39,7 @@ const ViewDoctorsPage = () => {
           <tbody>
             {doctors.map((doctor) => (
               <tr key={doctor.id} className="hover:bg-gray-100 transition duration-300">
+                <td className="py-3 px-5">{doctor.Dr_id}</td>
                 <td className="py-3 px-5">{doctor.Dr_name}</td>
                 <td className="py-3 px-5">{doctor.Gender}</td>
                 <td className="py-3 px-5">{doctor.Specialization}</td>

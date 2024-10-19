@@ -14,6 +14,7 @@ const RegisterPatientPage = () => {
         medicine: "",
         username: "",
         password: "",
+        dr_id: "",  // Added dr_id field
     });
 
     const [modalMessage, setModalMessage] = useState("");
@@ -46,7 +47,7 @@ const RegisterPatientPage = () => {
                 med_prescribed: formData.medicine,
                 username: formData.username,
                 password: formData.password,
-                dr_id: "A065",  // Example doctor ID
+                dr_id: formData.dr_id,  // Sending dr_id to the backend
             }),
         })
         .then((response) => response.json())
@@ -68,6 +69,7 @@ const RegisterPatientPage = () => {
                     medicine: "",
                     username: "",
                     password: "",
+                    dr_id: "",  // Clear dr_id field as well
                 });
             }
             setIsModalOpen(true); // Open the modal
@@ -176,6 +178,17 @@ const RegisterPatientPage = () => {
                         type="text"
                         name="disease"
                         value={formData.disease}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Doctor ID:</label>
+                    <input
+                        type="text"
+                        name="dr_id"
+                        value={formData.dr_id}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
                         required

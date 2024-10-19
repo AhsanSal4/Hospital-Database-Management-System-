@@ -2,17 +2,10 @@ from flask import Flask, jsonify, request
 import mysql.connector
 import random
 from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-from flask_cors import CORS
-import mysql.connector as myc
-import random
 from datetime import datetime  # For getting the current date
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
-
 
 # Function to connect to the database
 def get_db_connection():
@@ -24,22 +17,27 @@ def get_db_connection():
     )
     return conn
 
-# Function to generate a unique doctor ID
-def generate_doctor_id():
-    return random.choice('ABCDEFGHIJKLmnopqrstuvwxyz') + ''.join(random.choices('1234567890', k=3))
+# Function to generate a unique ID (for both doctors and receptionists)
+def generate_unique_id(prefix):
+    return prefix + random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('1234567890', k=3))
 
+# Function to generate a unique parking ID (optional, if needed)
+def generate_park_id():
+    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))
+
+# Route to hire a doctor
 @app.route('/Hire_Doctor', methods=['POST'])
-def hire():
+def hire_doctor():
     db = None
     cur = None
     try:
         # Retrieve data from the request body
         data = request.get_json()
-        Doctor_Name = data.get('fullName')  # Match the name field from frontend
+        Doctor_Name = data.get('fullName')
         mobile_no = data.get('mobile_no')
         Gender = data.get('gender')
         Specialisation = data.get('specialisation')
-        Working_Hrs = data.get('working_hrs')  # New field
+        Working_Hrs = data.get('working_hrs')
         Age = data.get('age')
         Salary = data.get('salary')
         Fees = data.get('fees')
@@ -47,56 +45,110 @@ def hire():
         Passwd = data.get('password')
 
         # Validate input data
-        if not all([Doctor_Name, mobile_no, Gender, Specialisation, Working_Hrs, Age, Salary, Fees,username, Passwd]):
+        if not all([Doctor_Name, mobile_no, Gender, Specialisation, Working_Hrs, Age, Salary, Fees, username, Passwd]):
             return jsonify({'error': 'All fields are required'}), 400
 
         if len(Passwd) <= 5:
-            return jsonify({'error': 'Password must be min 5 characters long'}), 400
+            return jsonify({'error': 'Password must be at least 6 characters long'}), 400
 
         # Connect to the database
         db = get_db_connection()
         cur = db.cursor()
 
-        # Generate parking ID and insert into Parking table
+        # Generate doctor ID and parking ID
+        dr_id = generate_unique_id('DR')
         park_id = generate_park_id()
+
+        # Insert into the Parking table (optional)
         cur.execute("INSERT INTO Parking (park_id, owner) VALUES (%s, %s)", (park_id, Doctor_Name))
 
         # Insert login credentials into the login table
-        dt_admit = datetime.now().strftime('%Y-%m-%d')  # Get current date
+        dt_admit = datetime.now().strftime('%Y-%m-%d')
         cur.execute("INSERT INTO login (username, pwd, role, last_login) VALUES (%s, %s, %s, %s)", 
                     (username, Passwd, 'DOCTOR', dt_admit))
 
-        # Generate a doctor ID
-        dr_id = generate_doctor_id()
-
         # Insert doctor record into the database
-        query = "INSERT INTO Doctor (dr_id, Doctor_Name, Gender, Specialisation, Age, Salary, Fees, Passwd) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (dr_id, Doctor_Name, Gender, Specialisation, Age, Salary, Fees, Passwd)
-        # Insert into the Doctor table
-        query = "INSERT INTO Doctors (dr_id, dr_name, ph_no, Specialization, working_hrs, gender, age, salary, fees, username, park_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        query = """
+        INSERT INTO Doctors (dr_id, dr_name, ph_no, Specialization, working_hrs, gender, age, salary, fees, username, park_id) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
         values = (dr_id, Doctor_Name, mobile_no, Specialisation, Working_Hrs, Gender, Age, Salary, Fees, username, park_id)
         cur.execute(query, values)
         db.commit()
 
-        response = {
-            'message': 'Doctor record inserted successfully',
-            'dr_id': dr_id
-        }
-        return jsonify(response), 201
+        return jsonify({'message': 'Doctor record inserted successfully', 'dr_id': dr_id}), 201
 
     except Exception as error:
         return jsonify({'error': str(error)}), 500
 
     finally:
-        # Safely close the cursor and the connection
-        # Close cursor and database connection if they were opened
         if cur:
             cur.close()
         if db:
             db.close()
 
-def generate_park_id():
-    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))
+# Route to add a receptionist
+@app.route('/add_receptionist', methods=['POST'])
+def add_receptionist():
+    db = None
+    cur = None
+    try:
+        # Retrieve data from the request body
+        data = request.get_json()
+        Receptionist_Name = data.get('fullName')
+        mobile_no = data.get('mobile_no')
+        Gender = data.get('gender')
+        Working_Hrs = data.get('working_hrs')
+        Age = data.get('age')
+        Salary = data.get('salary')
+        username = data.get('username')
+        Passwd = data.get('password')
+
+        # Validate input data
+        if not all([Receptionist_Name, mobile_no, Gender, Working_Hrs, Age, Salary, username, Passwd]):
+            return jsonify({'error': 'All fields are required'}), 400
+
+        if len(Passwd) <= 5:
+            return jsonify({'error': 'Password must be at least 6 characters long'}), 400
+
+        # Connect to the database
+        db = get_db_connection()
+        cur = db.cursor()
+
+        # Generate receptionist ID
+        rec_id = generate_unique_id('RE')
+
+        # Insert login credentials into the login table
+        dt_admit = datetime.now().strftime('%Y-%m-%d')
+        cur.execute("INSERT INTO login (Username, Pwd, role, Last_login) VALUES (%s, %s, %s, %s)", 
+                    (username, Passwd, 'RECEPTIONIST', dt_admit))
+
+        # Insert receptionist record into the database
+        query = """
+        INSERT INTO Receptionists (R_id, R_name, Ph_No, Working_hrs, Gender, Age, Salary, Username) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        values = (rec_id, Receptionist_Name, mobile_no, Working_Hrs, Gender, Age, Salary, username)
+        cur.execute(query, values)
+        db.commit()
+
+        return jsonify({'message': 'Receptionist record inserted successfully', 'recept_id': rec_id}), 201
+
+    except mysql.connector.Error as db_error:
+        # Handle specific database-related errors
+        return jsonify({'error': f'Database error: {str(db_error)}'}), 500
+
+    except Exception as error:
+        # Handle generic errors
+        return jsonify({'error': f'An error occurred: {str(error)}'}), 500
+
+    finally:
+        # Ensure cursor and db connection are safely closed
+        if cur is not None:
+            cur.close()
+        if db is not None:
+            db.close()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
