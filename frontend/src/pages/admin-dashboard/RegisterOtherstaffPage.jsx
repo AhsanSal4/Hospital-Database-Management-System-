@@ -10,6 +10,10 @@ const RegisterOtherstaffPage = () => {
     age: '',
     username: '',
     parkid: '',
+    pwd: '',
+    role: '', // Changed to text input
+    owner: '', // New field for parking owner
+    last_login: '', // New field for last login
   });
 
   const [message, setMessage] = useState('');
@@ -22,7 +26,7 @@ const RegisterOtherstaffPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/otherstaff/register', {
+      const response = await fetch('http://localhost:5000/register_other_staff', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,9 +45,14 @@ const RegisterOtherstaffPage = () => {
           age: '',
           username: '',
           parkid: '',
+          pwd: '',
+          role: '',
+          owner: '', // Reset the owner field
+          last_login: '', // Reset the last login field
         });
       } else {
-        setMessage('Failed to register the staff member.');
+        const errorData = await response.json();
+        setMessage(errorData.message);
       }
     } catch (error) {
       console.error('Error registering staff:', error);
@@ -173,22 +182,39 @@ const RegisterOtherstaffPage = () => {
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200"
-            >
-              Register Staff
-            </button>
-          </form>
+          
 
-          {message && <p className="mt-4 text-center text-blue-600">{message}</p>}
+            <div>
+              <label htmlFor="pwd" className="block font-medium">Password:</label>
+              <input
+                type="password"
+                id="pwd"
+                name="pwd"
+                value={otherStaffData.pwd}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+      
+            <div>
+              <label htmlFor="last_login" className="block font-medium">Last Login:</label>
+              <input
+                type="datetime-local"
+                id="last_login"
+                name="last_login"
+                value={otherStaffData.last_login}
+                onChange={handleChange}
+                className="input-field"
+              />
+            </div>
+
+            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Register Staff</button>
+          </form>
+          {message && <p className="mt-4 text-red-500">{message}</p>}
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-blue-500 text-white text-center py-4">
-        <p>&copy; 2024 CityCare Hospital | Your health, our priority.</p>
-      </footer>
     </div>
   );
 };

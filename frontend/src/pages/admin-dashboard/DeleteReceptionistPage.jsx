@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../app.css'; // Import CSS file if needed
 
 const DeleteReceptionistPage = () => {
   const [receptionistID, setReceptionistID] = useState('');
@@ -13,14 +14,14 @@ const DeleteReceptionistPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/receptionists/${receptionistID}`);
+      const response = await fetch(`http://localhost:5000/get_receptionists/${receptionistID}`); // Use receptionistID
       const data = await response.json();
 
-      if (response.ok && data) {
-        setReceptionistName(data.receptionist_name);
+      if (response.ok) {
+        setReceptionistName(data.R_name); // Correctly set the name
         setIsConfirmed(false); // Reset confirmation
       } else {
-        alert('Receptionist not found.');
+        alert(data.error || 'Receptionist not found.'); // Handle error message properly
         setReceptionistName('');
       }
     } catch (error) {
@@ -38,9 +39,11 @@ const DeleteReceptionistPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/receptionists/${receptionistID}`, {
+      const response = await fetch(`http://localhost:5000/delete_receptionists/${receptionistID}`, {
         method: 'DELETE',
       });
+
+      const data = await response.json(); // Get JSON response
 
       if (response.ok) {
         alert('Receptionist deleted successfully');
@@ -48,7 +51,7 @@ const DeleteReceptionistPage = () => {
         setReceptionistName('');
         setIsConfirmed(false);
       } else {
-        alert('Error deleting receptionist.');
+        alert(data.error || 'Error deleting receptionist.'); // Use data.error if available
       }
     } catch (error) {
       console.error('Error deleting receptionist:', error);

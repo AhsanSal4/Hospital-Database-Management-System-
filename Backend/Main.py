@@ -5,7 +5,7 @@ from flask_app import (
     Add_Med_Prescribed,
     Add_newPatient,
     Display_allPatient,
-    Display_Doc_Adm ,
+    Display_Doc_Adm,
     Display_Doc_U,
     Display_Patient,
     Add_Receptionist,
@@ -16,9 +16,17 @@ from flask_app import (
     Display_Med_Pa_,
     Add_Medicine,
     Bill,
-    login_p
+    login_p,
+    Display_OtherStaffs,
+    Update_Patient,
+    UpdateReceptionists,
+    UpdateDoctor,
+    UpdateStaff,
+    Delete_Patient,
+    Delete_Doctor,
+    Delete_Otherstaffs,
+    Register_otherStaffs
 )
-
 
 app = Flask(__name__)
 CORS(app)
@@ -59,9 +67,77 @@ def add_newPatient():
 def Login_pa():
     return login_p.loginp()
 
+@app.route('/get_all_patients', methods=['GET'])
+def Get_all_patients():
+    return Display_Patient.get_all_patients()
+
+@app.route('/get_all_receptionists', methods=['GET'])
+def Get_all_receptionists():
+    return Display_Receptionist.get_all_receptionists()
+
+@app.route('/display_all_doctors', methods=['GET'])
+def Display_all_doctors():
+    return Display_Doc_Adm.display_all_doctors()
+
+@app.route('/get_all_staffs', methods=['GET'])
+def Display_all_Staffs():
+    return Display_OtherStaffs.get_all_staffs()
+
+@app.route('/display_all_medicines', methods=['GET'])
+def Display_all_medicines():
+    return Display_Medicine.display_all_medicines()
+
+@app.route('/update_patient', methods=['PUT'])
+def Update_patients():
+    return Update_Patient.update_patient()  # Call the function with parentheses
+
+@app.route('/update_doctors', methods=['PUT'])
+def Uodate_Doc():
+    return UpdateDoctor.update_doctors()
+@app.route('/update_receptionists', methods=['PUT'])
+def Update_rece():
+    return UpdateReceptionists.update_receptionists()
+@app.route('/update_otherstaff', methods=['PUT'])
+def Update_Staff():
+    return UpdateStaff.update_otherstaff()
 @app.route('/admin/display_doctors', methods=['GET'])
 def display_doctors():
     return Display_Doc_Adm.Display_Adm()
+@app.route('/get_patient/<patient_id>', methods=['GET'])
+def Get_patiEnts(patient_id):
+    return Delete_Patient.get_patient(patient_id)
+
+@app.route('/delete_patient/<patient_id>', methods=['DELETE'])
+def Delete_Patients(patient_id):
+    return Delete_Patient.delete_patient(patient_id)
+
+@app.route('/get_receptionists/<r_id>', methods=['GET'])
+def Get_receptionists(r_id):
+    return Delete_Receptionist.get_receptionists(r_id)
+
+@app.route('/delete_receptionists/<r_id>', methods=['DELETE'])
+def Delete_receptionists(r_id):
+    return Delete_Receptionist.delete_receptionists(r_id)
+
+@app.route('/get_doctors/<dr_id>', methods=['GET'])
+def Get_doctors(dr_id):
+    return Delete_Doctor.get_doctors(dr_id)
+
+@app.route('/delete_doctors/<dr_id>', methods=['DELETE'])
+def Delete_doctors(dr_id):
+    return Delete_Doctor.delete_doctors(dr_id)
+
+@app.route('/get_staffs/<s_id>', methods=['GET'])
+def Get_staffs(s_id):
+    return Delete_Otherstaffs.get_staffs(s_id)
+
+@app.route('/delete_staffs/<s_id>', methods=['DELETE'])
+def Delete_staffs(s_id):
+    return Delete_Otherstaffs.delete_staffs(s_id)
+
+@app.route('/register_other_staff', methods=['POST'])
+def Register_other_staff():
+    return Register_otherStaffs.register_other_staff()
 
 @app.route('/user', methods=['GET'])
 def user_mode():

@@ -1,47 +1,37 @@
 from flask import Flask, jsonify
-import mysql.connector as myc
+import mysql.connector
+from flask_cors import CORS
+from mysql.connector import Error
 
 app = Flask(__name__)
+CORS(app)  # To allow cross-origin requests from your React app
 
-# Route to display all receptionists
-@app.route('/receptionists', methods=['GET'])
-def display_receptionists():
+def get_db_connection():
+    connection = None
     try:
-        # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
-        cur = db.cursor()
+        connection = mysql.connector.connect(
+            host='localhost',  # Replace with your host
+            user='root',  # Replace with your MySQL username
+            password='Nibhin@137',  # Replace with your MySQL password
+            database='hospital'  # Replace with your database name
+        )
+    except Error as e:
+        print(f"Error connecting to MySQL database: {e}")
+    return connection
 
-        # Query to get all receptionists
-        query = "SELECT * FROM Receptionist"
-        cur.execute(query)
-        receptionists = cur.fetchall()
-
-        # Define the response structure
-        response = []
-        for receptionist in receptionists:
-            receptionist_info = {
-                'R_id': receptionist[0],
-                'R_Name': receptionist[1],
-                'Age': receptionist[2],
-                'Salary': receptionist[3],
-                'Work_Hours': receptionist[4],
-                'Password': receptionist[5],
-                'Gender': receptionist[6]
-            }
-            response.append(receptionist_info)
-
-        # Return the result as JSON
-        return jsonify({'receptionists': response}), 200
-
-    except Exception as error:
-        # Return an error response in case of an exception
-        return jsonify({'error': str(error)}), 500
-
+@app.route('/get_all_receptionists', methods=['GET'])
+def get_all_receptionists():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM receptionists")
+        receptionists = cursor.fetchall()
+        return jsonify(receptionists),200
+    except Error as e:
+        print(f"Error reading data from MySQL table: {e}")
+        return jsonify({"error": "Unable to fetch data"}), 500
     finally:
-        # Close cursor and connection
-        cur.close()
-        db.close()
-
-# Run the Flask app
+        cursor.close()
+        connection.close()
 if __name__ == '__main__':
     app.run(debug=True)

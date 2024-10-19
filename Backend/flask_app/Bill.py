@@ -14,7 +14,7 @@ def tup_str(T):
 def generate_bill():
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
         cur = db.cursor()
 
         # Get data from request (assuming JSON input)

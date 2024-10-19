@@ -7,23 +7,48 @@ const UpdateDoctorPage = () => {
   const [newValue, setNewValue] = useState('');
 
   const fields = [
-    'Full Name',
+    'Dr_name',
     'Age',
     'Gender',
-    'Specialisation',
+    'Specialization',
     'Salary',
-    'Fees',
-    'Password',
+    'fees',
+    'Username',
+    'Ph_No',
+    'Working_Hrs',
+    'Park_id',
   ];
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    // Handle the update logic here (e.g., send to API)
-    console.log(`Updating ${updateField} for Doctor ID ${doctorID} to ${newValue}`);
-    // Clear the fields after update
-    setDoctorID('');
-    setUpdateField('');
-    setNewValue('');
+    
+    try {
+      const response = await fetch('http://localhost:5000/update_doctors', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          doctorID,       // Correctly use the doctorID state
+          updateField,
+          newValue,
+        }),
+      });
+
+      if (response.ok) {
+        alert(`Updated ${updateField} successfully!`);
+        // Clear the fields after update
+        setDoctorID('');
+        setUpdateField('');
+        setNewValue('');
+      } else {
+        const errorData = await response.json(); // Get the error message
+        alert(`Failed to update doctor information: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error('Error updating doctor:', error);
+      alert('An error occurred while updating the doctor.');
+    }
   };
 
   return (

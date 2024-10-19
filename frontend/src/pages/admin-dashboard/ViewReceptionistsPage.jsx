@@ -2,21 +2,46 @@ import React, { useState, useEffect } from 'react';
 
 const ViewReceptionistPage = () => {
   const [receptionists, setReceptionists] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
     // Fetch receptionist data from the server
     const fetchReceptionists = async () => {
       try {
-        const response = await fetch('/api/receptionists'); // Adjust the API URL as needed
+        const response = await fetch('http://localhost:5000/get_all_receptionists'); // Adjust the backend URL as needed
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         const data = await response.json();
         setReceptionists(data);
       } catch (error) {
+        setError(error.message); // Set the error message
         console.error('Error fetching receptionists:', error);
+      } finally {
+        setLoading(false); // Set loading to false regardless of the fetch result
       }
     };
 
     fetchReceptionists();
   }, []);
+
+  // Render loading or error messages
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl">Loading receptionists...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl text-red-500">Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-blue-50">
@@ -38,19 +63,19 @@ const ViewReceptionistPage = () => {
                 <th className="px-4 py-2 border">Gender</th>
                 <th className="px-4 py-2 border">Age</th>
                 <th className="px-4 py-2 border">Salary</th>
-                <th className="px-4 py-2 border">Password</th>
+                <th className="px-4 py-2 border">Username</th>
                 <th className="px-4 py-2 border">Work Hours</th>
               </tr>
             </thead>
             <tbody>
               {receptionists.map((receptionist) => (
-                <tr key={receptionist.id}>
-                  <td className="px-4 py-2 border">{receptionist.receptionist_name}</td>
-                  <td className="px-4 py-2 border">{receptionist.gender}</td>
-                  <td className="px-4 py-2 border">{receptionist.age}</td>
-                  <td className="px-4 py-2 border">{receptionist.salary}</td>
-                  <td className="px-4 py-2 border">{receptionist.password}</td>
-                  <td className="px-4 py-2 border">{receptionist.work_hours}</td>
+                <tr key={receptionist.R_id}>
+                  <td className="px-4 py-2 border">{receptionist.R_name}</td>
+                  <td className="px-4 py-2 border">{receptionist.Gender}</td>
+                  <td className="px-4 py-2 border">{receptionist.Age}</td>
+                  <td className="px-4 py-2 border">{receptionist.Salary}</td>
+                  <td className="px-4 py-2 border">{receptionist.Username}</td>
+                  <td className="px-4 py-2 border">{receptionist.Working_hrs}</td>
                 </tr>
               ))}
             </tbody>

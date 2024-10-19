@@ -14,15 +14,15 @@ const DeleteDoctorPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/doctors/${doctorID}`); // Adjust URL as needed
+      const response = await fetch(`http://localhost:5000/get_doctors/${doctorID}`); // Use receptionistID
       const data = await response.json();
 
       // Check if the doctor exists
-      if (response.ok && data) {
-        setDoctorName(data.name); // Assuming the API returns an object with a 'name' property
+      if (response.ok) {
+        setDoctorName(data.Dr_name); // Assuming the API returns an object with a 'name' property
         setIsConfirmed(false); // Reset confirmation state
       } else {
-        alert('Doctor not found.');
+        alert(data.error || 'Doctor not found.'); // Handle error message properly
         setDoctorName(''); // Reset doctor name if not found
       }
     } catch (error) {
@@ -40,9 +40,10 @@ const DeleteDoctorPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/doctors/${doctorID}`, {
+      const response = await fetch(`http://localhost:5000/delete_doctors/${doctorID}`, {
         method: 'DELETE',
       });
+      const data = await response.json(); // Get JSON response
 
       if (response.ok) {
         alert('Doctor deleted successfully');
@@ -51,7 +52,7 @@ const DeleteDoctorPage = () => {
         setDoctorName('');
         setIsConfirmed(false);
       } else {
-        alert('Error deleting doctor.');
+        alert(data.error ||'Error deleting doctor.');
       }
     } catch (error) {
       console.error('Error deleting doctor:', error);

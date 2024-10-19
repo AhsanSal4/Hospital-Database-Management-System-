@@ -5,22 +5,47 @@ const UpdatePatient = () => {
   const [patientID, setPatientID] = useState('');
   const [updateField, setUpdateField] = useState('');
   const [newValue, setNewValue] = useState('');
-  
+
   const fields = [
-    'Full Name',
-    'Age',
+    'P_name',
+    'Ph_No',
+    'Height_cm',
+    'Weight_kg',
     'Gender',
-    'Contact Number',
-    'Known Allergies',
-    'Previous Treatments',
-    'Current Diagnosis',
-    'Prescribed Medicines',
+    'Age',
+    'Disease',
+    'Med_prescribed',
+    'Username',
+    'Dr_id',
+    'Park_id',
   ];
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    // Handle the update logic here
-    console.log(`Updating ${updateField} for Patient ID ${patientID} to ${newValue}`);
+
+    try {
+      const response = await fetch('http://localhost:5000/update_patient', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patientID,
+          updateField,
+          newValue,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log(result.message); // Display success message or handle it as needed
+    } catch (error) {
+      console.error('Error updating patient:', error);
+    }
+
     // Clear the fields after update
     setPatientID('');
     setUpdateField('');
@@ -29,7 +54,6 @@ const UpdatePatient = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-blue-50">
-      {/* Header */}
       <header className="bg-gradient-to-r from-blue-500 to-blue-400 text-white py-6 shadow-md">
         <div className="text-center">
           <h1 className="text-4xl font-bold">CityCare Hospital</h1>
@@ -37,7 +61,6 @@ const UpdatePatient = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-grow flex justify-center items-center p-6">
         <section className="bg-white p-8 border border-gray-300 rounded-lg shadow-md transform transition-transform hover:scale-105 duration-300">
           <form className="space-y-4" onSubmit={handleUpdate}>
@@ -88,7 +111,6 @@ const UpdatePatient = () => {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="bg-blue-500 text-white text-center py-4">
         <p>&copy; 2024 CityCare Hospital | Your health, our priority.</p>
       </footer>
