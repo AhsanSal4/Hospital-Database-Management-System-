@@ -16,5 +16,9 @@ from .Display_Med_Pa_ import display_medicines_for_patient          #13
 from .Add_Medicine import add_medicine                     #14
 from .Bill import generate_bill                              #15
 from .login_p import loginp
+<<<<<<< HEAD
+from .Display_OtherStaffs import getallstaffs
+=======
 from .Display_OtherStaffs import getallstaffs
 from .Add_Other_Staff import add_new_other_staff
+>>>>>>> ac572aa7f51ab17beb358ee39e9a2c33d16d92c9

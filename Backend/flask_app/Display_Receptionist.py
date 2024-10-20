@@ -10,10 +10,10 @@ def get_db_connection():
     connection = None
     try:
         connection = mysql.connector.connect(
-            host='localhost',
-            database='micro_project',  # Replace with your DB name
+            host='localhost',  # Replace with your host
             user='root',  # Replace with your MySQL username
-            password='mysql123'  # Replace with your MySQL password
+            password='Nibhin@137',  # Replace with your MySQL password
+            database='hospital'  # Replace with your database name
         )
     except Error as e:
         print(f"Error connecting to MySQL database: {e}")

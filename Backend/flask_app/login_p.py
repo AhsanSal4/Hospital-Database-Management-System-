@@ -10,9 +10,9 @@ CORS(app)  # Enable CORS for all routes
 def get_db_connection():
     conn = mysql.connector.connect(
         host='localhost',
-        database='micro_project',  # Replace with your DB name
-        user='root',  # Replace with your MySQL username
-        password='mysql123'  # Replace with your MySQL password
+        user='root',  # Replace with your DB user
+        password='Nibhin@137',  # Replace with your DB password
+        database='hospital'  # Replace with your DB name
     )
     return conn
 

@@ -8,8 +8,7 @@ app = Flask(__name__)
 def display_specific_doctors():
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
-
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
         cur = db.cursor()
 
         # Query to fetch specific doctor data

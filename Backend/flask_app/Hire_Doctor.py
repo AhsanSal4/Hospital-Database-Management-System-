@@ -10,10 +10,10 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 # Function to connect to the database
 def get_db_connection():
     conn = mysql.connector.connect(
-            host='localhost',
-            database='micro_project',  # Replace with your DB name
-            user='root',  # Replace with your MySQL username
-            password='mysql123'  # Replace with your MySQL password
+        host='localhost',
+        user='root',
+        password='Nibhin@137',
+        database='hospital'
         )
     return conn
 
@@ -82,6 +82,7 @@ def hire_doctor():
         return jsonify({'error': str(error)}), 500
 
     finally:
+        # Safely close the cursor and the connection
         if cur:
             cur.close()
         if db:
