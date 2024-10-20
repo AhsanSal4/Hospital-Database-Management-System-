@@ -11,13 +11,13 @@ def get_db_connection():
     conn = mysql.connector.connect(
         host='localhost',
         user='root',  # Replace with your DB user
-        password='Nibhin@137',  # Replace with your DB password
-        database='hospital'  # Replace with your DB name
+        password='mysql123',  # Replace with your DB password
+        database='micro_project'  # Replace with your DB name
     )
     return conn
 
 # Fetch Patient Dashboard Data
-@app.route('/patient_dashboard', methods=['POST'])
+@app.route('/patient_dash', methods=['POST'])
 def patient_dashboard():
     data = request.json
     print(f"Received request body: {data}")  # Print the entire request body
@@ -77,5 +77,5 @@ def patient_dashboard():
         cursor.close()
         conn.close()
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)

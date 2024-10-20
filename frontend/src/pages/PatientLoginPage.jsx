@@ -22,9 +22,9 @@ const PatientLoginPage = () => {
       const data = await response.json();
 
       if (data.success) {
-        // If login is successful, store the username and navigate to the patient dashboard
+        // If login is successful, navigate to the patient dashboard
         localStorage.setItem('username', username); // Store username in local storage
-        navigate('/patient-dashboard');
+        navigate('/pat-dash');
       } else {
         // Handle login error (e.g., display a message)
         alert('Invalid username or password');

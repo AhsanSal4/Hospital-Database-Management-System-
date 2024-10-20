@@ -17,7 +17,7 @@ const PatientDashboard = () => {
 
     const fetchPatientData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/patient_dashboard', {
+        const response = await fetch('http://localhost:5000/patient_dash', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -80,6 +80,16 @@ const PatientDashboard = () => {
           <h2 className="text-xl font-semibold mb-4">Bills</h2>
           <p><strong>Previous Bills:</strong> {patientData.bills.previousBills}</p>
           <p><strong>Current Bills:</strong> {patientData.bills.currentBills}</p>
+        </section>
+
+        <section className="bg-white p-4 border border-gray-300 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4">View Reports</h2>
+          <form className="space-y-3">
+            <div>
+              <label htmlFor="reports" className="block font-medium">Medical Reports:</label>
+              <textarea id="reports" rows="4" className="input-field" required></textarea>
+            </div>
+          </form>
         </section>
       </main>
 
