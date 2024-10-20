@@ -177,6 +177,7 @@ def med_reg():
 def Get_patient_details(p_code):
     return Bill.get_patient_details(p_code)
 
+
 @app.route('/patient_dashboard', methods=['POST'])
 def patient_dashboard_route():  # Changed function name to avoid conflict
     return Patient_dashboard.patient_dashboard()

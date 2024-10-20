@@ -10,30 +10,32 @@ def tup_str(T):
     return ''.join(T) if T else ''
 
 # Route to get patient details
+# Route to get patient details (with Bill included)
 @app.route('/get-patient-details/<p_code>', methods=['GET'])
 def get_patient_details(p_code): 
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
         cur = db.cursor()
 
-        # Fetch patient details
+        # Fetch patient details (including Bill)
         q_patient = f"SELECT * FROM Patients WHERE P_id='{p_code}'"
         cur.execute(q_patient)
         patient_details = cur.fetchone()
 
         if patient_details:
             patient_data = {
-                "P_id": patient_details[0],           # P_id at index 0
-                "P_name": patient_details[1],         # P_name at index 1
-                "Age": patient_details[6],            # Age at index 6
-                "Gender": patient_details[5],         # Gender at index 5
-                "Height_cm": patient_details[3],      # Height_cm at index 2
-                "Weight_kg": patient_details[4],      # Weight_kg at index 3
-                "Dt_admit": patient_details[7],       # Dt_admit at index 7
-                "Disease": patient_details[8],        # Disease at index 8
-                "Med_prescribed": patient_details[9], # Med_prescribed at index 9
-                "Dr_id": patient_details[11]          # Dr_id at index 10 (change if necessary)
+                "P_id": patient_details[0],
+                "P_name": patient_details[1],
+                "Age": patient_details[6],
+                "Gender": patient_details[5],
+                "Height_cm": patient_details[3],
+                "Weight_kg": patient_details[4],
+                "Dt_admit": patient_details[7],
+                "Disease": patient_details[8],
+                "Med_prescribed": patient_details[9],
+                "Dr_id": patient_details[11],
+                "Bill": patient_details[13]  # Fetch the Bill from the Patients table
             }
             return jsonify({"success": True, "patient": patient_data}), 200
         else:
@@ -45,6 +47,7 @@ def get_patient_details(p_code):
     finally:
         cur.close()
         db.close()
+
 
 # Route for generating a bill
 @app.route('/generate_bill', methods=['POST'])

@@ -12,7 +12,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 def add_reception():
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
         cur = db.cursor()
 
         # Helper functions to pad or format strings

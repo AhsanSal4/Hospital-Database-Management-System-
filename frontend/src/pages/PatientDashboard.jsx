@@ -56,6 +56,7 @@ const PatientDashboard = () => {
       </header>
 
       <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+        {/* Patient Information Section */}
         <section className="bg-white p-4 border border-gray-300 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Patient Information</h2>
           <p><strong>ID:</strong> {patientData.patientID}</p>
@@ -65,34 +66,44 @@ const PatientDashboard = () => {
           <p><strong>Contact:</strong> {patientData.contactNumber}</p>
         </section>
 
+        {/* Medical History Section */}
         <section className="bg-white p-4 border border-gray-300 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Medical History</h2>
           <p><strong>Past Diseases:</strong> {patientData.pastDiseases}</p>
           <p><strong>Prescribed Medicines:</strong> {patientData.prescribedMedicines}</p>
         </section>
 
+        {/* Current Treatment Section */}
         <section className="bg-white p-4 border border-gray-300 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Current Treatment</h2>
           <p><strong>Attending Doctor:</strong> {patientData.attendingDoctor}</p>
         </section>
 
+        {/* Bills Section */}
         <section className="bg-white p-4 border border-gray-300 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Bills</h2>
-          <p><strong>Previous Bills:</strong> {patientData.bills.previousBills}</p>
           <p><strong>Current Bills:</strong> {patientData.bills.currentBills}</p>
         </section>
 
+        {/* Medical Reports Section */}
         <section className="bg-white p-4 border border-gray-300 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">View Reports</h2>
           <form className="space-y-3">
             <div>
               <label htmlFor="reports" className="block font-medium">Medical Reports:</label>
-              <textarea id="reports" rows="4" className="input-field" required></textarea>
+              <textarea
+                id="reports"
+                rows="4"
+                className="input-field"
+                value={patientData.medicalReports}
+                readOnly
+              ></textarea>
             </div>
           </form>
         </section>
       </main>
 
+      {/* Footer */}
       <footer className="bg-blue-500 text-white text-center py-4">
         <p>&copy; 2024 CityCare Hospital | Patient Portal</p>
       </footer>

@@ -10,9 +10,9 @@ CORS(app)  # Enable CORS for all routes
 def get_db_connection():
     conn = mysql.connector.connect(
             host='localhost',
-            database='micro_project',  # Replace with your DB name
+            database='hospital',  # Replace with your DB name
             user='root',  # Replace with your MySQL username
-            password='mysql123'  # Replace with your MySQL password
+            password='Nibhin@137'  # Replace with your MySQL password
         )
     return conn
 
@@ -31,7 +31,7 @@ def patient_dashboard():
     try:
         # Fetch patient details using username
         query = """
-        SELECT p.P_id, p.P_name, p.Age, p.Gender, p.Ph_No, p.Disease, p.Med_prescribed, p.Dr_id, d.Dr_name
+        SELECT p.P_id, p.P_name, p.Age, p.Gender, p.Ph_No, p.Disease, p.Med_prescribed, p.Dr_id, d.Dr_name, p.Bill, p.Patient_Reports
         FROM patients p
         LEFT JOIN doctors d ON p.Dr_id = d.Dr_id
         WHERE p.Username = %s
@@ -51,18 +51,10 @@ def patient_dashboard():
                 "pastDiseases": patient['Disease'] or "No past diseases recorded",
                 "prescribedMedicines": patient['Med_prescribed'] or "No medicines prescribed",
                 "attendingDoctor": patient['Dr_name'] or "Not assigned",
-                "treatmentRecords": "No records available",  # Placeholder
                 "bills": {
-                    "previousBills": "No previous bills",  # Placeholder
-                    "currentBills": "No current bills",  # Placeholder
-                    "billPayments": "No payments made",  # Placeholder
+                    "currentBills": f"₹{patient['Bill']:.2f}",
                 },
-                "medicalReports": "No reports available",  # Placeholder
-                "emergencyContact": {
-                    "name": "Not available",  # Placeholder
-                    "phone": "Not available",  # Placeholder
-                    "relation": "Not available"  # Placeholder
-                }
+                "medicalReports": patient['Patient_Reports'] or "No reports available",
             }
             return jsonify(response), 200
 
@@ -77,5 +69,5 @@ def patient_dashboard():
         cursor.close()
         conn.close()
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)

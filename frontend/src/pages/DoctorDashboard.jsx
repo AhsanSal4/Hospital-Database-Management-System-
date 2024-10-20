@@ -175,8 +175,7 @@ const DoctorDashboard = () => {
     } else {
         alert("Failed to approve bill");
     }
-};
-
+  };
 
   // Handle multiple medicines selection and update the total price
   const handleMedicineSelect = (e) => {
@@ -214,13 +213,12 @@ const DoctorDashboard = () => {
         </div>
       </header>
 
-{doctorDetails && (
-    <div className="text-center">
-        <h3 className="text-xl font-semibold">Welcome, Dr. {doctorDetails.dr_name}</h3>
-        <p className="text-lg">Specialization: {doctorDetails.specialization}</p>
-    </div>
-)}
-
+      {doctorDetails && (
+        <div className="text-center">
+          <h3 className="text-xl font-semibold">Welcome, Dr. {doctorDetails.dr_name}</h3>
+          <p className="text-lg">Specialization: {doctorDetails.specialization}</p>
+        </div>
+      )}
 
       <div className="bg-white p-6 border border-gray-300 rounded-lg shadow-md mx-6 mb-8">
         <h2 className="text-xl font-semibold mb-4 text-center">Select a Patient</h2>
@@ -244,11 +242,11 @@ const DoctorDashboard = () => {
           <h3 className="text-xl font-semibold">Selected Patient: {selectedPatient.P_name}</h3>
           <p className="text-lg">ID : {selectedPatient.P_id} ,Age: {selectedPatient.Age}, Gender: {selectedPatient.Gender}</p>
           <button
-  onClick={() => navigate("/update-patient-Doc", { state: { patientID: selectedPatient?.P_id } })}
-  className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
->
-  Update Disease
-</button>
+            onClick={() => navigate("/update-patient-Doc", { state: { patientID: selectedPatient?.P_id } })}
+            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+          >
+            Update Disease
+          </button>
         </div>
       )}
 
@@ -256,67 +254,73 @@ const DoctorDashboard = () => {
       <main className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
         {/* Patient Analysis Section */}
         <section className="bg-white p-6 border border-gray-300 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-center">Patient Analysis</h2>
-          <form className="space-y-4" onSubmit={handleSubmitAnalysis}>
-            <div>
-              <label htmlFor="analysisNotes" className="block font-medium">Analysis Notes:</label>
-              <textarea
-                id="analysisNotes"
-                className="input-field h-24"
-                required
-              />
-            </div>
-            <button type="submit" className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+          <h2 className="text-lg font-semibold mb-4">Submit Patient Analysis</h2>
+          <form onSubmit={handleSubmitAnalysis}>
+            <textarea
+              name="analysisNotes"
+              id="analysisNotes"
+              className="block w-full h-32 border border-gray-300 p-2 rounded mb-4"
+              placeholder="Enter patient analysis notes here"
+            ></textarea>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+            >
               Submit Analysis
             </button>
           </form>
         </section>
 
-        {/* Prescribe Medicine Section */}
+        {/* Prescription Section */}
         <section className="bg-white p-6 border border-gray-300 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-center">Prescribe Medicine</h2>
-          <form className="space-y-4" onSubmit={handlePrescribeMedicine}>
-            <div>
-              <label htmlFor="medicines" className="block font-medium">Select Medicines:</label>
-              <select
-                id="medicines"
-                className="w-full p-2 border rounded"
-                multiple
-                onChange={handleMedicineSelect}
-              >
-                {medicines.map((medicine) => (
-                  <option key={medicine.M_id} value={medicine.M_id}>
-                    {medicine.M_name} (₹{medicine.price})
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button type="submit" className="w-full bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
-              Prescribe Medicine
+          <h2 className="text-lg font-semibold mb-4">Prescribe Medicine</h2>
+          <form onSubmit={handlePrescribeMedicine}>
+            <select
+              multiple
+              name="medicines"
+              id="medicineSelect"
+              className="block w-full border border-gray-300 p-2 rounded mb-4"
+              onChange={handleMedicineSelect}
+            >
+              {medicines.map((medicine) => (
+                <option key={medicine.M_id} value={medicine.M_id}>
+                  {medicine.M_name} - ₹{medicine.price}
+                </option>
+              ))}
+            </select>
+            <p className="text-lg font-semibold mb-2">
+              Medicine Total: ₹{medicineTotalPrice.toFixed(2)}
+            </p>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+            >
+              Prescribe Medicines
             </button>
           </form>
-
-         
         </section>
 
         {/* Approve Bill Section */}
         <section className="bg-white p-6 border border-gray-300 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-center">Approve Bill</h2>
-          <form className="space-y-4" onSubmit={handleApproveBill}>
-            <div>
-              <label htmlFor="billAmount" className="block font-medium">Bill Amount:</label>
-              <input
-                type="number"
-                id="billAmount"
-                className="input-field"
-                required
-              />
-            </div>
-            <div className="font-semibold">Doctor Fee: ₹{doctorFee}</div>
-            <div className="font-semibold">Medicines Price: ₹{medicineTotalPrice}</div>
-            <div className="font-semibold">GST (18%): ₹{(doctorFee + medicineTotalPrice) * gst}</div>
-            <div className="font-semibold">Total Bill: ₹{calculateTotalBill()}</div>
-            <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+          <h2 className="text-lg font-semibold mb-4">Approve Bill</h2>
+          <form onSubmit={handleApproveBill}>
+            <p className="text-lg font-semibold mb-2">Doctor Fee: ₹{doctorFee}</p>
+            <p className="text-lg font-semibold mb-2">
+              Medicine Total: ₹{medicineTotalPrice.toFixed(2)}
+            </p>
+            <p className="text-lg font-semibold mb-2">GST: 18%</p>
+            <p className="text-lg font-semibold mb-4">
+              Total Bill (incl. GST): ₹{calculateTotalBill().toFixed(2)}
+            </p>
+            <input
+              type="hidden"
+              name="billAmount"
+              value={calculateTotalBill().toFixed(2)}
+            />
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+            >
               Approve Bill
             </button>
           </form>

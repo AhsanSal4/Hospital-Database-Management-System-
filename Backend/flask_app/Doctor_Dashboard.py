@@ -6,10 +6,10 @@ app = Flask(__name__)
 # Connect to the MySQL database
 def get_db_connection():
     return MySQLdb.connect(
-        host="localhost",
-        user="root",
-        passwd="mysql123",
-        db="micro_project"
+        host='localhost',
+        database='hospital',  # Replace with your DB name
+        user='root',  # Replace with your MySQL username
+        password='Nibhin@137'
     )
 
 
@@ -98,8 +98,8 @@ def submit_analysis():
     cursor = conn.cursor()
 
     try:
-        # Update the patient's analysis notes in the database
-        cursor.execute("UPDATE patients SET Analysis_Notes = %s WHERE P_id = %s", (analysis_notes, patient_id))
+        # Update the patient's analysis notes in the Patient_Reports column
+        cursor.execute("UPDATE patients SET Patient_Reports = %s WHERE P_id = %s", (analysis_notes, patient_id))
         conn.commit()
 
         return jsonify({'message': 'Analysis submitted successfully'}), 200
@@ -109,6 +109,7 @@ def submit_analysis():
     finally:
         cursor.close()
         conn.close()
+
 
 @app.route('/prescribe_medicine', methods=['POST'])
 def prescribe_medicine():
@@ -242,7 +243,7 @@ def approve_bill():
 
         # Apply GST (for example, 18%)
         gst = 0.18 * total_bill_before_gst
-        total_bill = total_bill_before_gst + gst + float(bill_amount)  # Adding additional bill amount
+        total_bill = total_bill_before_gst + gst   # Adding additional bill amount
 
         # Update the patient's bill details in the database
         cursor.execute("UPDATE patients SET Bill = %s WHERE P_id = %s", (total_bill, patient_id))
