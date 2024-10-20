@@ -1,3 +1,4 @@
+// DoctorLoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +10,6 @@ const DoctorLoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent default form submission
 
-    // Check credentials against your backend
     try {
       const response = await fetch('http://localhost:5000/login_do', {
         method: 'POST',
@@ -22,10 +22,9 @@ const DoctorLoginPage = () => {
       const data = await response.json();
 
       if (data.success) {
-        // If login is successful, navigate to the doctor dashboard
-        navigate('/doctor-dashboard');
+        localStorage.setItem('username', username); // Store username in local storage
+        navigate('/doctor-dashboard'); // Navigate to doctor dashboard after successful login
       } else {
-        // Handle login error (e.g., display a message)
         alert('Invalid username or password');
       }
     } catch (error) {
@@ -56,7 +55,9 @@ const DoctorLoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button type="submit" className="bg-blue-600 text-white w-full py-2 rounded-md">Login</button>
+            <button type="submit" className="bg-blue-600 text-white w-full py-2 rounded-md">
+              Login
+            </button>
           </div>
         </form>
         <p className="text-sm mt-4 text-center">

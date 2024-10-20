@@ -15,7 +15,6 @@ from flask_app import (
     Display_Medicine,
     Display_Med_Pa_,
     Add_Medicine,
-    Bill,
     login_p,
     login_adm,
     Display_OtherStaffs,
@@ -29,7 +28,9 @@ from flask_app import (
     DeleteMed,
     Add_Other_Staff,
     UpdateMedicine,
-    Patient_dashboard
+    Patient_dashboard,
+    Bill,
+    Doctor_Dashboard
 )
 
 app = Flask(__name__)
@@ -172,10 +173,34 @@ def add_newStaff():
 def med_reg():
     return Add_Medicine.add_new_medicine()
 
+@app.route('/get-patient-details/<p_code>', methods=['GET'])
+def Get_patient_details(p_code):
+    return Bill.get_patient_details(p_code)
+
 @app.route('/patient_dashboard', methods=['POST'])
 def patient_dashboard_route():  # Changed function name to avoid conflict
     return Patient_dashboard.patient_dashboard()
-
+@app.route('/get-doctor-fee/<dr_id>', methods=['GET'])
+def Get_doctor_details(dr_id):
+    return Bill.get_doctor_details(dr_id)
+@app.route('/generate_bill', methods=['POST'])
+def Generate_bill():
+    return Bill.generate_bill()
+@app.route('/get_patients/<doctor_username>', methods=['GET'])
+def Get_patients(doctor_username):
+    return Doctor_Dashboard.get_patients(doctor_username)
+@app.route('/approve_bill', methods=['POST'])
+def Approve_bill():
+    return Doctor_Dashboard.approve_bill()
+@app.route('/submit_analysis', methods=['POST'])
+def Submit_analysis():
+    return Doctor_Dashboard.submit_analysis()
+@app.route('/prescribe_medicine', methods=['POST'])
+def prescribe_medicine():
+    return Doctor_Dashboard.prescribe_medicine()
+@app.route('/get_medicines', methods=['GET'])
+def Get_medicines():
+    return Doctor_Dashboard.get_medicines()
 @app.route('/user', methods=['GET'])
 def user_mode():
     return jsonify({

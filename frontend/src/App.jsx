@@ -34,6 +34,7 @@ import ManageMedicine from './pages/admin-dashboard/ManageMedicine';
 import DeleteMedicine from './pages/admin-dashboard/DeleteMedicine';
 import UpdateMedicine from './pages/admin-dashboard/UpdateMedicine';
 import AddMed from './pages/admin-dashboard/AddMed';
+import GenerateBill from './pages/receptionist-dashboard/GenerateBill';
 
 function App() {
   return (
@@ -74,7 +75,7 @@ function App() {
           <Route path="/delete-Medicine" element={<DeleteMedicine/>} />
           <Route path="/update-Medicine" element={<UpdateMedicine/>} />
           <Route path="/add-Medicine" element={<AddMed/>} />
-
+          <Route path="/generate-bill" element={<GenerateBill/>} />
 
         </Routes>
       </div>
