@@ -28,7 +28,8 @@ from flask_app import (
     Delete_Otherstaffs,
     DeleteMed,
     Add_Other_Staff,
-    UpdateMedicine
+    UpdateMedicine,
+    Patient_dashboard
 )
 
 app = Flask(__name__)
@@ -170,6 +171,10 @@ def add_newStaff():
 @app.route('/medicineregister', methods=['POST'])
 def med_reg():
     return Add_Medicine.add_new_medicine()
+
+@app.route('/patient_dash', methods=['POST'])
+def patient_dash():
+    return Patient_dashboard.patient_dashboard()
 
 @app.route('/user', methods=['GET'])
 def user_mode():

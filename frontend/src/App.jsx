@@ -74,6 +74,7 @@ function App() {
           <Route path="/delete-Medicine" element={<DeleteMedicine/>} />
           <Route path="/update-Medicine" element={<UpdateMedicine/>} />
           <Route path="/add-Medicine" element={<AddMed/>} />
+          <Route path="/pat-dash" element={<PatientDashboard/>} />
 
 
         </Routes>
