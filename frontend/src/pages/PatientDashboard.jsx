@@ -17,7 +17,7 @@ const PatientDashboard = () => {
 
     const fetchPatientData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/patient_dash', {
+        const response = await fetch('http://localhost:5000/patient_dashboard', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

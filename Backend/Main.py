@@ -201,6 +201,9 @@ def prescribe_medicine():
 @app.route('/get_medicines', methods=['GET'])
 def Get_medicines():
     return Doctor_Dashboard.get_medicines()
+@app.route('/doctor_dash', methods=['POST'])
+def doc_dash():
+    return Doctor_Dashboard.doctor_dashboard()
 @app.route('/user', methods=['GET'])
 def user_mode():
     return jsonify({

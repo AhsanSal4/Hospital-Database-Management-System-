@@ -3,7 +3,6 @@ from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
 
-
 app = Flask(__name__)
 CORS(app)
 
@@ -12,10 +11,10 @@ def get_db_connection():
     connection = None
     try:
         connection = mysql.connector.connect(
-            host='localhost',  # Replace with your host
+            host='localhost',
+            database='micro_project',  # Replace with your DB name
             user='root',  # Replace with your MySQL username
-            password='Nibhin@137',  # Replace with your MySQL password
-            database='hospital'  # Replace with your database name
+            password='mysql123'  # Replace with your MySQL password
         )
     except Error as e:
         print(f"Error connecting to MySQL database: {e}")
@@ -37,8 +36,13 @@ def update_patient():
         if not patient_id or not update_field or not new_value:
             return jsonify({'error': 'Missing data: patientID, updateField, and newValue are required'}), 400
 
-        # Connect to the database
-       
+        # Check if the patient ID exists
+        cursor.execute("SELECT * FROM Patients WHERE P_id = %s", (patient_id,))
+        patient = cursor.fetchone()
+
+        if not patient:
+            return jsonify({'error': 'Patient ID does not exist'}), 404  # Return 404 if not found
+
         # Create the SQL query to update the patient information
         query = f"UPDATE Patients SET {update_field} = %s WHERE P_id = %s"
         cursor.execute(query, (new_value, patient_id))
@@ -61,7 +65,7 @@ def get_all_patients():
         cursor = conn.cursor(dictionary=True)
 
         # Fetch all patients
-        cursor.execute("SELECT * FROM Patient")
+        cursor.execute("SELECT * FROM Patients")
         patients = cursor.fetchall()
 
         cursor.close()

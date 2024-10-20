@@ -11,10 +11,10 @@ def tup_str(T):
 
 # Route to get patient details
 @app.route('/get-patient-details/<p_code>', methods=['GET'])
-def get_patient_details(p_code):
+def get_patient_details(p_code): 
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
         cur = db.cursor()
 
         # Fetch patient details

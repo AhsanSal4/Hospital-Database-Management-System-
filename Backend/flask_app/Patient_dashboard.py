@@ -9,15 +9,15 @@ CORS(app)  # Enable CORS for all routes
 # Database connection
 def get_db_connection():
     conn = mysql.connector.connect(
-        host='localhost',
-        user='root',  # Replace with your DB user
-        password='mysql123',  # Replace with your DB password
-        database='micro_project'  # Replace with your DB name
-    )
+            host='localhost',
+            database='micro_project',  # Replace with your DB name
+            user='root',  # Replace with your MySQL username
+            password='mysql123'  # Replace with your MySQL password
+        )
     return conn
 
 # Fetch Patient Dashboard Data
-@app.route('/patient_dash', methods=['POST'])
+@app.route('/patient_dashboard', methods=['POST'])
 def patient_dashboard():
     data = request.json
     print(f"Received request body: {data}")  # Print the entire request body

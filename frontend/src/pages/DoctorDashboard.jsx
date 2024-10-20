@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../app.css"; // Import CSS file if needed
 
 const DoctorDashboard = () => {
+  const navigate = useNavigate();
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [medicines, setMedicines] = useState([]);
@@ -11,6 +13,36 @@ const DoctorDashboard = () => {
   const [gst, setGst] = useState(0.18); // 18% GST
   const [totalBill, setTotalBill] = useState(0); // New state for total bill
   const [error, setError] = useState(null);
+  const [doctorDetails, setDoctorDetails] = useState(null);
+
+  // Fetch doctor details
+  const fetchDoctorDetails = async () => {
+    const doctorUsername = localStorage.getItem("username");
+    if (!doctorUsername) {
+      setError("Doctor username is not available");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/doctor_dash", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: doctorUsername }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Failed to fetch doctor details");
+        return;
+      }
+
+      const data = await response.json();
+      setDoctorDetails(data);
+    } catch (error) {
+      console.error("Error fetching doctor details:", error);
+      setError(error.message);
+    }
+  };
 
   // Fetch patients and medicines when component mounts
   const fetchPatients = async () => {
@@ -50,6 +82,7 @@ const DoctorDashboard = () => {
   };
 
   useEffect(() => {
+    fetchDoctorDetails();
     fetchPatients();
     fetchMedicines();
   }, []);
@@ -124,25 +157,26 @@ const DoctorDashboard = () => {
     const billAmount = e.target.billAmount.value;
 
     if (!selectedPatient || !billAmount) {
-      return alert("Please select a patient and provide bill amount.");
+        return alert("Please select a patient and provide bill amount.");
     }
 
     const response = await fetch("http://localhost:5000/approve_bill", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        patientID: selectedPatient.P_id,
-        billAmount,
-      }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            patientID: selectedPatient.P_id,
+            billAmount, // This is correctly sent
+        }),
     });
 
     const data = await response.json();
     if (data.message) {
-      alert("Bill approved successfully");
+        alert("Bill approved successfully");
     } else {
-      alert("Failed to approve bill");
+        alert("Failed to approve bill");
     }
-  };
+};
+
 
   // Handle multiple medicines selection and update the total price
   const handleMedicineSelect = (e) => {
@@ -180,6 +214,14 @@ const DoctorDashboard = () => {
         </div>
       </header>
 
+{doctorDetails && (
+    <div className="text-center">
+        <h3 className="text-xl font-semibold">Welcome, Dr. {doctorDetails.dr_name}</h3>
+        <p className="text-lg">Specialization: {doctorDetails.specialization}</p>
+    </div>
+)}
+
+
       <div className="bg-white p-6 border border-gray-300 rounded-lg shadow-md mx-6 mb-8">
         <h2 className="text-xl font-semibold mb-4 text-center">Select a Patient</h2>
         <select
@@ -200,7 +242,13 @@ const DoctorDashboard = () => {
       {selectedPatient && (
         <div className="text-center">
           <h3 className="text-xl font-semibold">Selected Patient: {selectedPatient.P_name}</h3>
-          <p className="text-lg">Age: {selectedPatient.Age}, Gender: {selectedPatient.Gender}</p>
+          <p className="text-lg">ID : {selectedPatient.P_id} ,Age: {selectedPatient.Age}, Gender: {selectedPatient.Gender}</p>
+          <button
+  onClick={() => navigate("/update-patient-Doc", { state: { patientID: selectedPatient?.P_id } })}
+  className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+>
+  Update Disease
+</button>
         </div>
       )}
 
@@ -248,16 +296,7 @@ const DoctorDashboard = () => {
             </button>
           </form>
 
-          {/* Bill Calculation */}
-          {medicineTotalPrice > 0 && doctorFee > 0 && (
-            <div className="mt-4 text-center">
-              <h3 className="font-semibold">Total Bill</h3>
-              <div>Doctor Fee: ₹{doctorFee}</div>
-              <div>Medicines Price: ₹{medicineTotalPrice}</div>
-              <div>GST (18%): ₹{(doctorFee + medicineTotalPrice) * gst}</div>
-              <div>Total Bill: ₹{totalBill}</div>
-            </div>
-          )}
+         
         </section>
 
         {/* Approve Bill Section */}
@@ -275,6 +314,7 @@ const DoctorDashboard = () => {
             </div>
             <div className="font-semibold">Doctor Fee: ₹{doctorFee}</div>
             <div className="font-semibold">Medicines Price: ₹{medicineTotalPrice}</div>
+            <div className="font-semibold">GST (18%): ₹{(doctorFee + medicineTotalPrice) * gst}</div>
             <div className="font-semibold">Total Bill: ₹{calculateTotalBill()}</div>
             <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
               Approve Bill

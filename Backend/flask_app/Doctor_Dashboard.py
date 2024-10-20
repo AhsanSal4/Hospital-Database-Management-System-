@@ -8,9 +8,40 @@ def get_db_connection():
     return MySQLdb.connect(
         host="localhost",
         user="root",
-        passwd="Nibhin@137",
-        db="hospital"
+        passwd="mysql123",
+        db="micro_project"
     )
+
+
+# Route to fetch doctor details
+@app.route('/doctor_dash', methods=['POST'])
+def doctor_dashboard():
+    data = request.json
+    username = data.get('username')
+
+    if not username:
+        return jsonify({'error': 'Username is required'}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+
+    try:
+        # Fetch doctor details based on the username
+        cursor.execute("SELECT dr_name, specialization FROM doctors WHERE Username = %s", (username,))
+        doctor_details = cursor.fetchone()
+
+        if doctor_details:
+            return jsonify(doctor_details), 200
+        else:
+            return jsonify({'error': 'Doctor not found'}), 404
+    except MySQLdb.Error as e:
+        print(f"Error: {e}")
+        return jsonify({'error': 'Database query failed'}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+# ... (other routes remain unchanged)
 
 # Route to fetch patients for a specific doctor
 @app.route('/get_patients/<doctor_username>', methods=['GET'])
@@ -96,7 +127,7 @@ def prescribe_medicine():
     try:
         # Dynamically create placeholders for the number of medicines
         placeholders = ', '.join(['%s'] * len(medicines))
-        sql_query = f"SELECT M_name FROM medicine WHERE M_name IN ({placeholders})"
+        sql_query = f"SELECT M_name FROM medicine WHERE M_id IN ({placeholders})"
         print(f"SQL Query: {sql_query}, Params: {tuple(medicines)}")  # Debugging log
         cursor.execute(sql_query, tuple(medicines))
         medicine_details = cursor.fetchall()
@@ -106,8 +137,8 @@ def prescribe_medicine():
         if not medicine_details:
             return jsonify({'error': 'Invalid medicine names provided'}), 400
 
-        # Convert list of medicine names to a string
-        medicines_str = ', '.join([medicine['M_name'] for medicine in medicine_details])
+        # Convert list of medicine names to a string, accessing the first element of each tuple
+        medicines_str = ', '.join([medicine[0] for medicine in medicine_details])
 
         if not medicines_str:
             return jsonify({'error': 'No valid medicine names found'}), 400
@@ -123,7 +154,7 @@ def prescribe_medicine():
         patient = cursor.fetchone()
 
         if patient:
-            doctor_id = patient['Dr_id']
+            doctor_id = patient[0]  # Corrected to access Dr_id from fetched patient tuple
             cursor.execute(""" 
                 SELECT fees FROM doctors WHERE Dr_id = %s
             """, (doctor_id,))
@@ -135,12 +166,12 @@ def prescribe_medicine():
             # Fetch the total price of selected medicines
             cursor.execute(""" 
                 SELECT price FROM medicine WHERE M_name IN (%s)
-            """, (', '.join([f"'{medicine['M_name']}'" for medicine in medicine_details]),))
+            """, (', '.join([f"'{medicine[0]}'" for medicine in medicine_details]),))
             medicine_prices = cursor.fetchall()
 
             # Calculate total bill before GST
-            total_medicine_price = sum([medicine['price'] for medicine in medicine_prices])
-            total_bill_before_gst = doctor_fee['fees'] + total_medicine_price
+            total_medicine_price = sum([medicine[0] for medicine in medicine_prices])
+            total_bill_before_gst = doctor_fee[0] + total_medicine_price
 
             # Apply GST (for example, 18%)
             gst = 0.18 * total_bill_before_gst
@@ -150,7 +181,7 @@ def prescribe_medicine():
                 'message': 'Medicines prescribed and bill generated successfully',
                 'total_bill': total_bill,
                 'gst': gst,
-                'doctor_fee': doctor_fee['fees'],
+                'doctor_fee': doctor_fee[0],
                 'medicines': medicines_str
             }), 200
         else:
@@ -186,31 +217,43 @@ def approve_bill():
         if not doctor_fee:
             return jsonify({'error': 'Doctor fee not found'}), 404
 
-        # Fetch the total price of selected medicines
+        # Fetch the prescribed medicines from the patients table
         cursor.execute(""" 
-            SELECT price FROM medicine 
-            WHERE M_name IN (SELECT M_name FROM medicines_prescribed WHERE P_id = %s)
+            SELECT Med_prescribed FROM patients WHERE P_id = %s
         """, (patient_id,))
+        prescribed_medicines = cursor.fetchone()
+
+        if not prescribed_medicines or not prescribed_medicines[0]:
+            return jsonify({'error': 'No prescribed medicines found for this patient'}), 404
+
+        # Split the string of medicine names
+        medicines_list = prescribed_medicines[0].split(', ')
+
+        # Fetch the prices for the prescribed medicines
+        placeholders = ', '.join(['%s'] * len(medicines_list))
+        cursor.execute(f""" 
+            SELECT price FROM medicine WHERE M_name IN ({placeholders})
+        """, tuple(medicines_list))
         medicine_prices = cursor.fetchall()
 
         # Calculate total bill before GST
-        total_medicine_price = sum([medicine['price'] for medicine in medicine_prices])
-        total_bill_before_gst = doctor_fee['fees'] + total_medicine_price
+        total_medicine_price = sum([price[0] for price in medicine_prices])
+        total_bill_before_gst = doctor_fee[0] + total_medicine_price
 
         # Apply GST (for example, 18%)
         gst = 0.18 * total_bill_before_gst
-        total_bill = total_bill_before_gst + gst + bill_amount  # Adding additional bill amount (for any other charges)
+        total_bill = total_bill_before_gst + gst + float(bill_amount)  # Adding additional bill amount
 
         # Update the patient's bill details in the database
-        cursor.execute("UPDATE patients SET Bill_Approved = 1, Bill_Amount = %s WHERE P_id = %s", (total_bill, patient_id))
+        cursor.execute("UPDATE patients SET Bill = %s WHERE P_id = %s", (total_bill, patient_id))
         conn.commit()
 
         return jsonify({
             'message': 'Bill approved successfully',
             'total_bill': total_bill,
             'gst': gst,
-            'doctor_fee': doctor_fee['fees'],
-            'medicine_prices': [medicine['price'] for medicine in medicine_prices]
+            'doctor_fee': doctor_fee[0],
+            'medicine_prices': [price[0] for price in medicine_prices]
         }), 200
     except MySQLdb.Error as e:
         print(f"Error: {e}")
@@ -219,5 +262,7 @@ def approve_bill():
         cursor.close()
         conn.close()
 
-if __name__ == '__main__':
+
+
+if __name__ == 'main':
     app.run(debug=True)

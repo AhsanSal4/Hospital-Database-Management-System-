@@ -11,7 +11,7 @@ const GenerateBill = () => {
   const fetchPatientDetails = async () => {
     if (!patientId) {
       setError('Please enter a valid Patient ID');
-      return;
+      return; 
     }
     try {
       const response = await fetch(`http://localhost:5000/get-patient-details/${patientId}`);

@@ -1,27 +1,15 @@
 import React, { useState } from 'react';
-import '../../app.css'; // Import CSS file if needed
+import { useLocation } from 'react-router-dom';  // Import useLocation
+import '../app.css'; // Import CSS file if needed
 
 const UpdatePatient = () => {
-  const [patientID, setPatientID] = useState('');
-  const [updateField, setUpdateField] = useState('');
-  const [newValue, setNewValue] = useState('');
+  const location = useLocation();  // Get location object from the router
+  const [patientID, setPatientID] = useState(location.state?.patientID || '');  // Set initial patientID with P_id from location state
+  const [newValue, setNewValue] = useState('');  // Field for the new disease value
   const [alertMessage, setAlertMessage] = useState('');  // State for alert message
   const [alertVisible, setAlertVisible] = useState(false);  // State for alert visibility
 
-  const fields = [
-    'P_name',
-    'Ph_No',
-    'Height_cm',
-    'Weight_kg',
-    'Gender',
-    'Age',
-    'Disease',
-    'Med_prescribed',
-    'Username',
-    'Dr_id',
-    'Park_id',
-  ];
-
+  // Handle update submission
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -33,17 +21,10 @@ const UpdatePatient = () => {
         },
         body: JSON.stringify({
           patientID,
-          updateField,
+          updateField: 'disease',  // Assuming you are updating the 'disease' field
           newValue,
         }),
       });
-
-      if (response.status === 404) {
-        const result = await response.json();
-        setAlertMessage(result.error);  // Set error message for not found
-        setAlertVisible(true);  // Show alert
-        return; // Early return to prevent further execution
-      }
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -54,16 +35,13 @@ const UpdatePatient = () => {
       setAlertVisible(true);  // Show alert
 
     } catch (error) {
-      setAlertMessage('Error updating patient. Please try again.');  // Set error message for general errors
+      setAlertMessage('Error updating patient. Please try again.');  // Set error message
       setAlertVisible(true);  // Show alert
     }
 
     // Clear the fields after update
-    setPatientID('');
-    setUpdateField('');
     setNewValue('');
-};
-
+  };
 
   // Handle alert close
   const handleCloseAlert = () => {
@@ -109,23 +87,7 @@ const UpdatePatient = () => {
             </div>
 
             <div>
-              <label htmlFor="updateField" className="block font-medium">Select Field to Update:</label>
-              <select
-                id="updateField"
-                value={updateField}
-                onChange={(e) => setUpdateField(e.target.value)}
-                className="input-field"
-                required
-              >
-                <option value="" disabled>Select an option</option>
-                {fields.map((field, index) => (
-                  <option key={index} value={field}>{field}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="newValue" className="block font-medium">New Value:</label>
+              <label htmlFor="newValue" className="block font-medium">New Disease:</label>
               <input
                 type="text"
                 id="newValue"
