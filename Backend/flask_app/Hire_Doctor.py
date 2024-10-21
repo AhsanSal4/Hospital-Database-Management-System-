@@ -11,9 +11,9 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 def get_db_connection():
     conn = mysql.connector.connect(
             host='localhost',
-            database='hospital',  # Replace with your DB name
+            database='micro_project',  # Replace with your DB name
             user='root',  # Replace with your MySQL username
-            password='Nibhin@137'  # Replace with your MySQL password
+            password='mysql123'  # Replace with your MySQL password
         )
     return conn
 

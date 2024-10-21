@@ -15,7 +15,7 @@ def tup_str(T):
 def get_patient_details(p_code): 
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
         cur = db.cursor()
 
         # Fetch patient details (including Bill)
@@ -54,7 +54,7 @@ def get_patient_details(p_code):
 def generate_bill():
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
         cur = db.cursor()
 
         # Get data from request (assuming JSON input)
@@ -152,7 +152,7 @@ def generate_bill():
 def get_doctor_details(dr_id):
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
         cur = db.cursor()
 
         # Debugging log for doctor ID

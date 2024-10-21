@@ -240,7 +240,7 @@ const DoctorDashboard = () => {
       {selectedPatient && (
         <div className="text-center">
           <h3 className="text-xl font-semibold">Selected Patient: {selectedPatient.P_name}</h3>
-          <p className="text-lg">ID : {selectedPatient.P_id} ,Age: {selectedPatient.Age}, Gender: {selectedPatient.Gender}</p>
+          <p className="text-lg">ID : {selectedPatient.P_id} ,Age: {selectedPatient.Age}, Gender: {selectedPatient.Gender} , Disease: {selectedPatient.Disease}</p>
           <button
             onClick={() => navigate("/update-patient-Doc", { state: { patientID: selectedPatient?.P_id } })}
             className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-colors duration-300"

@@ -7,15 +7,15 @@ app = Flask(__name__)
 def get_db_connection():
     return MySQLdb.connect(
         host='localhost',
-        database='hospital',  # Replace with your DB name
+        database='micro_project',  # Replace with your DB name
         user='root',  # Replace with your MySQL username
-        password='Nibhin@137'
+        password='mysql123'
     )
 
 
 # Route to fetch doctor details
 @app.route('/doctor_dash', methods=['POST'])
-def doctor_dashboard():
+def doctor_dashboard(): 
     data = request.json
     username = data.get('username')
 

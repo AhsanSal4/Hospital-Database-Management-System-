@@ -10,7 +10,7 @@ def add_medicine():
     Medicine = data.get('Medicine')
 
     try:
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
         cur = db.cursor()
 
         q = "UPDATE Patient SET Med_Prescribed = %s WHERE P_code = %s"

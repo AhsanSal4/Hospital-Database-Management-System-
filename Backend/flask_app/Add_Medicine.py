@@ -10,7 +10,7 @@ CORS(app)
 def add_new_medicine():
     try:
         # Connect to the database
-        db = myc.connect(host='localhost', user='root', port='3306', passwd='Nibhin@137', database='hospital')
+        db = myc.connect(host='localhost', user='root', port='3306', passwd='mysql123', database='micro_project')
         cur = db.cursor()
 
         # Extract data from request body
