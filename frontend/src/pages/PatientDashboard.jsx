@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const PatientDashboard = () => {
   const [patientData, setPatientData] = useState(null);
@@ -47,12 +48,15 @@ const PatientDashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-blue-50">
-      {/* Render patientData */}
-      <header className="bg-gradient-to-r from-blue-500 to-blue-400 text-white py-6 shadow-md">
-        <div className="text-center">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-blue-500 to-blue-400 text-white py-6 shadow-md flex justify-between items-center px-6">
+        <div className="text-center flex-1">
           <h1 className="text-4xl font-bold">CityCare Hospital</h1>
-          <p className="text-xl mt-2">Patient Information Page</p>
+          <p className="text-xl mt-2">Patient Dashboard</p>
         </div>
+        <Link to="/">
+          <button className="bg-white text-blue-700 px-4 py-2 rounded">Log Out</button>
+        </Link>
       </header>
 
       <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">

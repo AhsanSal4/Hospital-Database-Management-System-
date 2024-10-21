@@ -76,10 +76,10 @@ def add_new_patient():
             db.close()
 
 def generate_park_id():
-    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))
+    return 'PP'+ ''.join(random.choices('0123456789', k=3))
 
 def generate_random_code():
-    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=5))
+    return 'P'+ ''.join(random.choices('0123456789', k=4))
 
 if __name__ == '__main__':
     app.run(debug=True)

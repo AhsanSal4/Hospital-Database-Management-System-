@@ -19,11 +19,10 @@ def get_db_connection():
 
 # Function to generate a unique ID (for both doctors and receptionists)
 def generate_unique_id(prefix):
-    return prefix + random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('1234567890', k=3))
-
+    return 'D'+ ''.join(random.choices('0123456789', k=4))
 # Function to generate a unique parking ID (optional, if needed)
 def generate_park_id():
-    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))
+    return 'PD'+ ''.join(random.choices('0123456789', k=3))
 
 # Route to hire a doctor
 @app.route('/Hire_Doctor', methods=['POST'])

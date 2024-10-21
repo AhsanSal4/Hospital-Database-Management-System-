@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../../components/Modal"; // Make sure the path is correct
 
 const RegisterPatientPage = () => {
@@ -17,8 +17,27 @@ const RegisterPatientPage = () => {
         dr_id: "",  // Added dr_id field
     });
 
+    const [doctors, setDoctors] = useState([]); // State to hold doctors
+    const [loadingDoctors, setLoadingDoctors] = useState(true); // Loading state for doctors
     const [modalMessage, setModalMessage] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        // Fetch doctors from the backend
+        const fetchDoctors = async () => {
+            try {
+                const response = await fetch("http://localhost:5000/display_doctor_spec"); // Update this URL based on your backend
+                const data = await response.json();
+                setDoctors(data); // Assuming the response is an array of doctors
+            } catch (error) {
+                console.error("Error fetching doctors:", error);
+            } finally {
+                setLoadingDoctors(false);
+            }
+        };
+
+        fetchDoctors();
+    }, []); // Empty dependency array means this runs once on mount
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -183,17 +202,31 @@ const RegisterPatientPage = () => {
                         required
                     />
                 </div>
+
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2">Doctor ID:</label>
-                    <input
-                        type="text"
-                        name="dr_id"
-                        value={formData.dr_id}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-                        required
-                    />
+                    <label className="block text-gray-700 font-bold mb-2">Doctor:</label>
+                    {loadingDoctors ? (
+                        <select className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500" disabled>
+                            <option>Loading doctors...</option>
+                        </select>
+                    ) : (
+                        <select
+                            name="dr_id"
+                            value={formData.dr_id}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+                            required
+                        >
+                            <option value="">Select Doctor</option>
+                            {doctors.map((doctor) => (
+                                <option key={doctor.dr_id} value={doctor.dr_id}>
+                                    {doctor.dr_id} - {doctor.specialization}
+                                </option>
+                            ))}
+                        </select>
+                    )}
                 </div>
+
                 <div className="flex space-x-4">
                     <div className="mb-4">
                         <label className="block text-gray-700 font-bold mb-2">Username:</label>
@@ -218,6 +251,7 @@ const RegisterPatientPage = () => {
                         />
                     </div>
                 </div>
+
                 <button
                     type="submit"
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300"

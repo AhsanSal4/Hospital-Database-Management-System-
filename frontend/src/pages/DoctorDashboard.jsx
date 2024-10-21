@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import "../app.css"; // Import CSS file if needed
 
 const DoctorDashboard = () => {
   const navigate = useNavigate();
+  
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [medicines, setMedicines] = useState([]);
@@ -199,18 +201,19 @@ const DoctorDashboard = () => {
     return <div className="text-red-500 text-center">{error}</div>;
   }
 
-  if (!patients.length) {
-    return <div className="text-gray-500 text-center">No patients available or loading...</div>;
-  }
+  
 
   return (
     <div className="min-h-screen flex flex-col bg-blue-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-blue-500 to-blue-400 text-white py-6 shadow-md">
-        <div className="text-center">
+      <header className="bg-gradient-to-r from-blue-500 to-blue-400 text-white py-6 shadow-md flex justify-between items-center px-6">
+        <div className="text-center flex-1">
           <h1 className="text-4xl font-bold">CityCare Hospital</h1>
           <p className="text-xl mt-2">Doctor Dashboard</p>
         </div>
+        <Link to="/">
+          <button className="bg-white text-blue-700 px-4 py-2 rounded">Log Out</button>
+        </Link>
       </header>
 
       {doctorDetails && (

@@ -39,13 +39,13 @@ def add_reception():
 
         # Generate a random receptionist ID
         r_id = (
-            random.choice('ABCDEFCGHIJKLMNOPQRSTUVWXYZ') +
+            'R' +
             ''.join(random.choices('1234567890', k=2))
         )
 
         # Generate a random park ID
         park_id = (
-            random.choice('ABCDEFCGHIJKLMNOPQRSTUVWXYZ') +
+            'PR' +
             ''.join(random.choices('1234567890', k=3))
         )
 

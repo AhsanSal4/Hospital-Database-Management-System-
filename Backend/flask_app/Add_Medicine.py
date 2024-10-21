@@ -41,7 +41,7 @@ def add_new_medicine():
         db.close()
 
 def generate_medicine_id():
-    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))
+    return 'M'+ ''.join(random.choices('0123456789', k=4))
 
 if __name__ == '__main__':
     app.run(debug=True)

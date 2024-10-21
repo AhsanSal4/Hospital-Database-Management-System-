@@ -30,7 +30,8 @@ from flask_app import (
     UpdateMedicine,
     Patient_dashboard,
     Bill,
-    Doctor_Dashboard
+    Doctor_Dashboard,
+    parking
 )
 
 app = Flask(__name__)
@@ -88,6 +89,10 @@ def Login_Ad():
 def up_med():
     return UpdateMedicine.update_medicine()
 
+@app.route('/get_filled_slots', methods=['GET'])
+def get_filled_slot():
+    return parking.get_filled_slots()
+
 @app.route('/login_re', methods=['POST'])
 def Login_re():
     return login_p.loginr()
@@ -132,6 +137,10 @@ def Get_patiEnts(patient_id):
 @app.route('/delete_patient/<patient_id>', methods=['DELETE'])
 def Delete_Patients(patient_id):
     return Delete_Patient.delete_patient(patient_id)
+
+@app.route('/display_doctor_spec', methods=['GET'])
+def display_doc_specc():
+    return Display_Doc_Adm.display_doc_spec()
 
 @app.route('/get_receptionists/<r_id>', methods=['GET'])
 def Get_receptionists(r_id):

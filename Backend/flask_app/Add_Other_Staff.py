@@ -67,10 +67,10 @@ def add_new_other_staff():
         db.close()
 
 def generate_park_id():
-    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))
+    return 'PS'+ ''.join(random.choices('0123456789', k=3))
 
 def generate_staff_id():
-    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + ''.join(random.choices('0123456789', k=3))
+    return 'S'+ ''.join(random.choices('0123456789', k=4))
 
 if __name__ == '__main__':
     app.run(debug=True)

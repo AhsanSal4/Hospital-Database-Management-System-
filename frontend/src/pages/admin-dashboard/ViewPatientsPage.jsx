@@ -38,6 +38,9 @@ const ViewPatientsPage = () => {
               <th className="py-2 px-4 text-left">Disease</th>
               <th className="py-2 px-4 text-left">Doctor</th>
               <th className="py-2 px-4 text-left">Username</th>
+              <th className="py-2 px-4 text-left">Park_id</th>
+              <th className="py-2 px-4 text-left">Bill</th>
+              <th className="py-2 px-4 text-left">Patient_Reports</th>
             </tr>
           </thead>
           <tbody>
@@ -57,6 +60,9 @@ const ViewPatientsPage = () => {
                   <td className="py-2 px-4 border-b border-gray-200">{patient.Dt_admit}</td>
                   <td className="py-2 px-4 border-b border-gray-200">{patient.Disease}</td>
                   <td className="py-2 px-4 border-b border-gray-200">{patient.Dr_id}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Username}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Park_id}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">{patient.Bill}</td>
                   <td className="py-2 px-4 border-b border-gray-200">{patient.Username}</td>
                 </tr>
               ))

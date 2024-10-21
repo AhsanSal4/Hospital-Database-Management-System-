@@ -17,8 +17,8 @@ def display_all_patients():
         patients = cur.fetchall()
 
         # Column names for clarity in response
-        column_names = ['P_code', 'Patient_Name', 'Mobile_No', 'Gender', 'Age', 'Height', 'Weight', 'Date_Admit', 'Symptom', 'Med_Prescribed', 'Dr_id']
-
+        column_names = ['P_code', 'Patient_Name', 'Mobile_No', 'Gender', 'Age', 'Height', 'Weight', 'Date_Admit', 'Symptom', 'Med_Prescribed', 'Dr_id', 'Park_id' , 'Bill' ,'Patient_Reports']
+ 
         # Format fetched patient data into a list of dictionaries
         patient_list = [dict(zip(column_names, patient)) for patient in patients]
 

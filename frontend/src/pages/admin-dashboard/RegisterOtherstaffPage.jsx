@@ -14,6 +14,7 @@ const RegisterOtherstaffPage = () => {
   });
 
   const [message, setMessage] = useState('');
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,9 +44,12 @@ const RegisterOtherstaffPage = () => {
           username: '',
           pwd: '',
         });
+        setIsDuplicate(false); // Reset duplicate flag
+      } else if (response.status === 409) { // Assuming 409 Conflict for duplicate
+        setIsDuplicate(true);
       } else {
         const errorData = await response.json();
-        setMessage(errorData.message);
+        setMessage(errorData.message || 'This staff member is already registered.');
       }
     } catch (error) {
       console.error('Error registering staff:', error);
@@ -67,7 +71,6 @@ const RegisterOtherstaffPage = () => {
       <main className="flex-grow flex justify-center items-center p-6">
         <section className="bg-white p-8 border border-gray-300 rounded-lg shadow-md w-full max-w-md">
           <form className="space-y-4" onSubmit={handleSubmit}>
-
             <div>
               <label htmlFor="name" className="block font-medium">Name:</label>
               <input
@@ -150,8 +153,6 @@ const RegisterOtherstaffPage = () => {
               />
             </div>
 
-          
-
             <div>
               <label htmlFor="pwd" className="block font-medium">Password:</label>
               <input
@@ -165,13 +166,25 @@ const RegisterOtherstaffPage = () => {
               />
             </div>
 
-    
-
             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Register Staff</button>
           </form>
-          {message && <p className="mt-4 text-red-500">{message}</p>}
+
+          {message && <p className={`mt-4 ${isDuplicate ? 'text-red-500' : 'text-green-500'}`}>{message}</p>}
         </section>
       </main>
+
+      {/* Popup for Duplicate Entry */}
+      {isDuplicate && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-md">
+            <h2 className="text-lg font-bold">Error</h2>
+            <p>This staff member is already registered.</p>
+            <button onClick={() => setIsDuplicate(false)} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

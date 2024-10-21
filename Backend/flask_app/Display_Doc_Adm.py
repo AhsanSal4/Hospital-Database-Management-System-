@@ -36,5 +36,22 @@ def display_all_doctors():
         cursor.close()
         connection.close()
 
+@app.route('/display_doctor_spec', methods=['GET'])
+def display_doc_spec():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT dr_id, specialization FROM Doctors")  # Adjust this query to match your table structure
+        doctors = cursor.fetchall()
+
+        return jsonify(doctors), 200
+    except Error as e:
+        print(f"Error reading data from MySQL table: {e}")
+        return jsonify({"error": "Unable to fetch data"}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
 if __name__ == '__main__':
     app.run(debug=True)

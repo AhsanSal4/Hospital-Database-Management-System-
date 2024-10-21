@@ -52,22 +52,55 @@ def delete_receptionists(r_id):
     if connection is None:
         return jsonify({'error': 'Database connection error'}), 500
 
-    cursor = connection.cursor()
+    try:
+        # Create separate cursors for each operation
+        cursor1 = connection.cursor(dictionary=True)
+        cursor2 = connection.cursor(dictionary=True)
+        cursor3 = connection.cursor(dictionary=True)
 
-    # The tuple must have a trailing comma to ensure it's interpreted correctly
-    cursor.execute("DELETE FROM receptionists WHERE R_id = %s", (r_id,))  # Add a trailing comma
+        # Fetch Park_id from patients table
+        cursor1.execute("SELECT Park_id FROM receptionists WHERE r_id = %s", (r_id,))
+        park_result = cursor1.fetchone()  # Fetch the result
 
-    connection.commit()
+        cursor1.execute("SELECT username FROM receptionists WHERE r_id = %s", (r_id,))
+        user_result = cursor1.fetchone() 
 
-    rowcount = cursor.rowcount  # Capture row count before closing the cursor
-    cursor.close()
-    connection.close()
+        cursor1.execute("DELETE FROM receptionists WHERE r_id = %s", (r_id,))
+        connection.commit()
 
-    if rowcount > 0:
-        return jsonify({'message': 'Receptionist deleted successfully'})
-    else:
-        return jsonify({'error': 'Receptionist not found'}), 404
+        if park_result and park_result['Park_id']:
+            park_id = park_result['Park_id']
+            
+            # Delete from parking table using the fetched Park_id
+            cursor2.execute("DELETE FROM parking WHERE Park_id = %s", (park_id,))
+            connection.commit()
 
+        # Fetch username from patients table
+         # Fetch the result
+
+        if user_result and user_result['username']:
+            username = user_result['username']
+            
+            # Delete from login table using the fetched username
+            cursor3.execute("DELETE FROM login WHERE username = %s", (username,))
+            connection.commit()
+
+        # Finally, delete the patient from the patients table
+        if cursor1.rowcount > 0:
+            return jsonify({'message': 'Receptionist deleted successfully'})
+        else:
+            return jsonify({'error': 'Receptionist not found'}), 404
+
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return jsonify({'error': 'Failed to delete Receptionist '}), 500
+
+    finally:
+        # Close all cursors and connection
+        cursor1.close()
+        cursor2.close()
+        cursor3.close()
+        connection.close()
 
 # Run the Flask app
 if __name__ == '__main__':

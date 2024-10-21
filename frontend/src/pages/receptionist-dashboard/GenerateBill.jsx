@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import hospitalLogo from '/logo.jpg'; // Assuming logo is placed in the public folder
 
 const GenerateBill = () => {
@@ -48,80 +47,104 @@ const GenerateBill = () => {
   };
 
   // Function to download the bill as a PDF
-  const downloadBillAsPDF = () => {
-    if (patientDetails && doctorDetails) {
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+  // Function to download the bill as a PDF
+// Function to download the bill as a PDF
+const downloadBillAsPDF = () => {
+  if (patientDetails && doctorDetails) {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-      // Add hospital logo
-      pdf.addImage(hospitalLogo, 'PNG', pageWidth / 2 - 20, 10, 40, 20);
+    // Add hospital logo
+    pdf.addImage(hospitalLogo, 'PNG', pageWidth / 2 - 20, 10, 40, 20);
 
-      // Title and hospital information
-      pdf.setFontSize(22);
-      pdf.setTextColor(33, 150, 243); // Theme blue color
-      pdf.text('CityCare Hospital', pageWidth / 2, 40, { align: 'center' });
-      pdf.setFontSize(12);
-      pdf.setTextColor(100);
-      pdf.text('Near MACE MEN\'s Hostel, Kothamangalam, Kerala', pageWidth / 2, 48, { align: 'center' });
-      pdf.text('Contact: +91 9074938234 | Email: citycarehospital@gmail.com', pageWidth / 2, 54, { align: 'center' });
+    // Title and hospital information
+    pdf.setFontSize(26);
+    pdf.setTextColor(0, 51, 102); // Dark navy blue for the title
+    pdf.text('CityCare Hospital', pageWidth / 2, 40, { align: 'center' });
+    pdf.setFontSize(12);
+    pdf.setTextColor(100);
+    pdf.text('Near MACE MEN\'s Hostel, Kothamangalam, Kerala', pageWidth / 2, 48, { align: 'center' });
+    pdf.text('Contact: +91 9074938234 | Email: citycarehospital@gmail.com', pageWidth / 2, 54, { align: 'center' });
 
-      // Add a thematic line separator
-      pdf.setDrawColor(33, 150, 243);
-      pdf.line(15, 60, pageWidth - 15, 60); // Blue horizontal line
+    // Add a thematic line separator
+    pdf.setDrawColor(0, 51, 102); // Dark navy blue
+    pdf.line(15, 60, pageWidth - 15, 60); // Blue horizontal line
 
-      // Patient Details Section
-      pdf.setFontSize(16);
-      pdf.setTextColor(34, 197, 94); // Green for headers
-      pdf.text('Patient Details', 15, 70);
-      pdf.setFontSize(12);
-      pdf.setTextColor(0);
+    // Patient Details Section
+    pdf.setFontSize(16);
+    pdf.setTextColor(255); // White for section headers
+    pdf.setFillColor(0, 102, 204); // Light blue background for the header
+    pdf.rect(10, 65, pageWidth - 20, 10, 'F'); // Header background
 
-      pdf.text(`Name: ${patientDetails.P_name}`, 15, 80);
-      pdf.text(`Age: ${patientDetails.Age}`, 15, 86);
-      pdf.text(`Gender: ${patientDetails.Gender}`, 15, 92);
-      pdf.text(`Admitted On: ${patientDetails.Dt_admit}`, 15, 98);
-      pdf.text(`Prescribed Medicines: ${patientDetails.Med_prescribed}`, 15, 104);
+    pdf.text('Patient Details', 15, 73);
+    pdf.setFontSize(12);
+    pdf.setTextColor(0);
+    pdf.setFillColor(255); // White for details background
+    pdf.rect(10, 75, pageWidth - 20, 55, 'F'); // Details background
+    pdf.setTextColor(0); // Reset text color to black
 
-      // Doctor Details Section
-      pdf.setFontSize(16);
-      pdf.setTextColor(34, 197, 94);
-      pdf.text('Doctor Details', 15, 116);
-      pdf.setFontSize(12);
-      pdf.setTextColor(0);
-      pdf.text(`Doctor: ${doctorDetails.name}`, 15, 126);
-      pdf.text(`Doctor's Fee: ${doctorDetails.fee} Rupees`, 15, 132);
+    pdf.text(`Name: ${patientDetails.P_name}`, 15, 80);
+    pdf.text(`Age: ${patientDetails.Age}`, 15, 86);
+    pdf.text(`Gender: ${patientDetails.Gender}`, 15, 92);
+    pdf.text(`Admitted On: ${patientDetails.Dt_admit}`, 15, 98);
+    pdf.text(`Prescribed Medicines: ${patientDetails.Med_prescribed}`, 15, 104);
 
-      // Billing Section
-      const medicineCharge = patientDetails.Bill;
-      const gstAmount = (medicineCharge * 0.18).toFixed(2);
-      const totalAmount = (medicineCharge * 1.18).toFixed(2);
+    // Doctor Details Section
+    pdf.setFontSize(16);
+    pdf.setTextColor(255); // White for section headers
+    pdf.setFillColor(0, 102, 204); // Light blue background for the header
+    pdf.rect(10, 135, pageWidth - 20, 10, 'F'); // Header background
 
-      pdf.setFontSize(16);
-      pdf.setTextColor(34, 197, 94);
-      pdf.text('Billing Details', 15, 144);
-      pdf.setFontSize(12);
-      pdf.setTextColor(0);
-      pdf.text(`Doctor's Fee: ${doctorDetails.fee} Rupees`, 15, 154);
-      pdf.text(`Medicine Charges: ${medicineCharge} Rupees`, 15, 160);
-      pdf.text(`GST (18%): ${gstAmount} Rupees`, 15, 166);
-      pdf.setFontSize(14);
-      pdf.setTextColor(255, 87, 34); // Orange for total amount
-      pdf.text(`Total Bill: ${totalAmount} Rupees Only`, 15, 176);
+    pdf.text('Doctor Details', 15, 143);
+    pdf.setFontSize(12);
+    pdf.setTextColor(0);
+    pdf.setFillColor(255); // White for details background
+    pdf.rect(10, 145, pageWidth - 20, 30, 'F'); // Details background
+    pdf.setTextColor(0); // Reset text color to black
 
-      // Add another line separator before the footer
-      pdf.setDrawColor(33, 150, 243);
-      pdf.line(15, pageHeight - 30, pageWidth - 15, pageHeight - 30);
+    pdf.text(`Doctor: ${doctorDetails.name}`, 15, 150);
+    pdf.text(`Doctor's Fee: ${doctorDetails.fee} Rupees`, 15, 156);
 
-      // Footer section
-      pdf.setFontSize(10);
-      pdf.setTextColor(100);
-      pdf.text('Thank you for your visit!', pageWidth / 2, pageHeight - 20, { align: 'center' });
+    // Billing Section
+    const medicineCharge = patientDetails.Bill;
+    const gstAmount = (medicineCharge * 0.18).toFixed(2);
+    const totalAmount = (medicineCharge * 1.18).toFixed(2);
 
-      // Save PDF
-      pdf.save(`Bill_${patientDetails.P_name}_${new Date().toLocaleDateString()}.pdf`);
-    }
-  };
+    pdf.setFontSize(16);
+    pdf.setTextColor(255); // White for section headers
+    pdf.setFillColor(0, 102, 204); // Light blue background for the header
+    pdf.rect(10, 185, pageWidth - 20, 10, 'F'); // Header background
+
+    pdf.text('Billing Details', 15, 193);
+    pdf.setFontSize(12);
+    pdf.setTextColor(0);
+    pdf.setFillColor(255); // White for details background
+    pdf.rect(10, 195, pageWidth - 20, 50, 'F'); // Details background
+    pdf.setTextColor(0); // Reset text color to black
+
+    pdf.text(`Doctor's Fee: ${doctorDetails.fee} Rupees`, 15, 205);
+    pdf.text(`Medicine Charges: ${medicineCharge} Rupees`, 15, 211);
+    pdf.text(`GST (18%): ${gstAmount} Rupees`, 15, 217);
+    pdf.setFontSize(14);
+    pdf.setTextColor(255, 87, 34); // Orange for total amount
+    pdf.text(`Total Bill: ${totalAmount} Rupees Only`, 15, 227);
+
+    // Add another line separator before the footer
+    pdf.setDrawColor(0, 51, 102);
+    pdf.line(15, pageHeight - 30, pageWidth - 15, pageHeight - 30);
+
+    // Footer section
+    pdf.setFontSize(10);
+    pdf.setTextColor(100);
+    pdf.text('Thank you for your visit!', pageWidth / 2, pageHeight - 20, { align: 'center' });
+
+    // Save PDF
+    pdf.save(`Bill_${patientDetails.P_name}_${new Date().toLocaleDateString()}.pdf`);
+  }
+};
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-200 to-green-200 flex flex-col items-center py-10">
@@ -148,9 +171,9 @@ const GenerateBill = () => {
 
       {error && <div className="text-red-500 mb-8">{error}</div>}
 
-      <div id="bill-content" className="flex justify-between w-3/4 mb-8">
+      <div className="flex justify-between w-3/4 mb-8">
         {patientDetails && (
-          <div className="bg-white p-9 rounded-lg shadow-lg w-1/3">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 m-2">
             <h2 className="text-2xl font-semibold text-blue-500 mb-4">Patient Details</h2>
             <p><strong>Name:</strong> {patientDetails.P_name}</p>
             <p><strong>Gender:</strong> {patientDetails.Gender}</p>
@@ -162,7 +185,7 @@ const GenerateBill = () => {
         )}
 
         {doctorDetails && (
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 m-2">
             <h2 className="text-2xl font-semibold text-green-500 mb-4">Doctor Details</h2>
             <p><strong>Name:</strong> {doctorDetails.name}</p>
             <p><strong>Fee:</strong> ₹{doctorDetails.fee}</p>
@@ -170,7 +193,7 @@ const GenerateBill = () => {
         )}
 
         {patientDetails && patientDetails.Bill !== null && (
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 m-2">
             <h2 className="text-2xl font-semibold text-green-500 mb-4">Billing</h2>
             <p><strong>Total Bill:</strong> ₹{(patientDetails.Bill * 1.18).toFixed(2)}</p>
           </div>
